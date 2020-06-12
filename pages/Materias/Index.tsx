@@ -26,8 +26,6 @@ const MateriasLista: React.FC = ({ navigation }: any) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(materias)
-
   const loadMaterias = useCallback(async () => {
     try {
       await dispatch(MateriasAction.loadMaterias());
@@ -73,7 +71,7 @@ const MateriasLista: React.FC = ({ navigation }: any) => {
         </View>
       ) : materias.length != 0 ? (
         materias.map((element, index) => (
-          <DisplayMateria key={index} id={element.id} title={element.title} />
+          <DisplayMateria key={element.id} id={element.id} title={element.title} />
         ))
       ) : (
         <View style={styles.boxText}>
