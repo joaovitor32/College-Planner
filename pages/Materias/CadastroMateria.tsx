@@ -1,6 +1,6 @@
 /*---Search how to make multiple handle text inputs better-----*/
 
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -19,7 +19,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../colors/colors";
 import LinearGradientBox from "../../components/LinearGradientBox";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as MateriasAction from "../../store/actions/Materia";
 
 const CHECK_INPUTS = "CHECK_INPUTS";
@@ -36,12 +36,47 @@ interface validityInputs {
   description: boolean;
 }
 
-const CadastroMateria: React.FC = ({ navigation }: any) => {
-  const dispatch = useDispatch();
+interface state {
+  materias: {
+    items: {
+      id: number;
+      title: string;
+      periodo: string;
+      description: string;
+    }[];
+  };
+}
+
+const CadastroMateria: React.FC = ({ navigation, route }: any) => {
+  const { id, type } = route.params;
   const [dados, setDados] = useState<materiaData>({} as materiaData);
   const [validity, setValidity] = useState<validityInputs>(
     {} as validityInputs
   );
+
+  const dispatch = useDispatch();
+  const materiaObject = useSelector((state: state) =>
+    state.materias.items.find((mat) => mat.id == id)
+  );
+
+  useEffect(() => {
+    switch (type) {
+      case "EditarMateria":
+        if (materiaObject) {
+          setDados({
+            title: materiaObject.title,
+            periodo: materiaObject.periodo,
+            description: materiaObject.description,
+          } as materiaData);
+          setValidity({
+            title: true,
+            periodo: true,
+            description: true,
+          } as validityInputs);
+        }
+        return;
+    }
+  }, [type, materiaObject]);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -115,15 +150,32 @@ const CadastroMateria: React.FC = ({ navigation }: any) => {
   };
 
   const submitMateria = () => {
-    if (validity.title && validity.periodo&&validity.description) {
-      try{
-        dispatch(
-          MateriasAction.addMateria(dados.title, dados.periodo, dados.description)
-        ); 
-      }catch(err){
+    if (validity.title && validity.periodo && validity.description) {
+      try {
+        switch (type) {
+          case "CadastraMateria":
+            dispatch(
+              MateriasAction.addMateria(
+                dados.title,
+                dados.periodo,
+                dados.description
+              )
+            );
+            break;
+          case "EditarMateria":
+            dispatch(
+              MateriasAction.editMateria(
+                id,
+                dados.title,
+                dados.periodo,
+                dados.description
+              )
+            );
+            break;
+        }
+      } catch (err) {
         Alert.alert(err);
       }
-      
     } else {
       Alert.alert(
         "Algum dado inserido está incorreto!",
@@ -134,7 +186,10 @@ const CadastroMateria: React.FC = ({ navigation }: any) => {
 
   return (
     <LinearGradientBox>
-      <KeyboardAvoidingView  behavior={Platform.OS == "ios" ? "padding" : "height"} style={{flex:1}}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
         <View style={styles.form}>
           <View style={styles.containerForm}>
             <View style={styles.container}>
@@ -144,7 +199,7 @@ const CadastroMateria: React.FC = ({ navigation }: any) => {
                 style={styles.input}
                 onChange={inputHandlerTitle}
                 value={dados.title}
-                returnKeyType='done' 
+                returnKeyType="done"
               />
             </View>
             <View style={styles.container}>
@@ -154,7 +209,7 @@ const CadastroMateria: React.FC = ({ navigation }: any) => {
                 onChange={inputHandlerPeriodo}
                 style={styles.input}
                 value={dados.periodo}
-                returnKeyType='done' 
+                returnKeyType="done"
               />
             </View>
             <View style={styles.container}>
@@ -166,13 +221,13 @@ const CadastroMateria: React.FC = ({ navigation }: any) => {
                 multiline={true}
                 numberOfLines={4}
                 value={dados.description}
-                returnKeyType='done' 
+                returnKeyType="done"
               />
             </View>
             <View style={styles.container}>
               <TouchableOpacity style={styles.button} onPress={() => {}}>
                 <Text onPress={submitMateria} style={styles.titleButton}>
-                  Cadastrar
+                  {!id ? "Cadastrar" : "Editar"}
                 </Text>
               </TouchableOpacity>
             </View>

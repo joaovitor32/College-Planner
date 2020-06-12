@@ -1,26 +1,38 @@
-import React, { useEffect} from "react";
-import { StyleSheet, Text, View,FlatList } from "react-native";
+import React from "react";
+import { ListItem } from "react-native-elements";
+import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { Colors } from "../../colors/colors";
+import LinearGradient from "react-native-linear-gradient";
 
-interface  Props{
-    title:string,
-    periodo:string,
-    description:string,
+interface Props {
+  title: string;
+  key: number;
+  id:number,
 }
 
 const DisplayMateria: React.FC<Props> = (props) => {
-    return (
-        <View >
-            <Text>
-                {props.title}
-                {props.periodo}
-                {props.description}
-            </Text>
-        </View>
-    )
-}
+  const navigation = useNavigation();
 
-const style=StyleSheet.create({
-
-})
+  return (
+    <ListItem
+      key={props.key}
+      title={props.title}
+      rightAvatar={
+        <AntDesign
+          name="caretright"
+          onPress={() => {
+            navigation.navigate("MateriaNova",{id:props.id,type:"EditarMateria"});
+          }}
+          size={20}
+          color={Colors.whiteTransparent}
+        />
+      }
+      containerStyle={{backgroundColor:Colors.gray}}
+      titleStyle={{ color: Colors.whiteTransparent, fontWeight: "bold" }}
+      bottomDivider
+    />
+  );
+};
 
 export default DisplayMateria;

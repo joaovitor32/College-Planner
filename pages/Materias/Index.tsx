@@ -1,22 +1,47 @@
-import React, { useEffect} from "react";
-import { StyleSheet, Text, View,FlatList } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import { StyleSheet, Text, View, ActivityIndicator, Alert } from "react-native";
+
 import { AntDesign } from "@expo/vector-icons";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+import { Colors } from "../../colors/colors";
 import LinearGradientBox from "../../components/LinearGradientBox";
 
-import {useSelector,useDispatch} from 'react-redux';
-import * as MateriasAction from '../../store/actions/Materia'
+import { useSelector, useDispatch } from "react-redux";
+import * as MateriasAction from "../../store/actions/Materia";
 import DisplayMateria from "../../components/materias/DisplayMateria";
 
-const MateriasLista: React.FC = ({ navigation }:any) => {
+interface state {
+  materias: {
+    items: {
+      id: number;
+      title: string;
+      periodo: string;
+      description: string;
+    }[];
+  };
+}
 
-  const materias=useSelector((state:any)=>state.materias.items);
+const MateriasLista: React.FC = ({ navigation }: any) => {
+  const dispatch = useDispatch();
+  const materias = useSelector((state: state) => state.materias.items);
 
-  const dispatch=useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(()=>{
-    dispatch(MateriasAction.loadMaterias())
-  },[dispatch])
+  console.log(materias)
+
+  const loadMaterias = useCallback(async () => {
+    try {
+      await dispatch(MateriasAction.loadMaterias());
+    } catch (err) {
+      Alert.alert(err);
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    loadMaterias().then(() => {
+      setIsLoading(false);
+    });
+  }, [loadMaterias]);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -29,9 +54,9 @@ const MateriasLista: React.FC = ({ navigation }:any) => {
             size={28}
             color={Colors.white}
             onPress={() => {
-              navigation.navigate("Materias", {
-                screen: "MateriaNova",
-                initial: false,
+              navigation.navigate("MateriaNova", {
+                type: "CadastraMateria",
+                id: null,
               });
             }}
           />
@@ -42,43 +67,47 @@ const MateriasLista: React.FC = ({ navigation }:any) => {
 
   return (
     <LinearGradientBox>
-      {materias.length!=0?<FlatList
-        data={materias}
-        renderItem={({item,index,separators})=>(
-            <DisplayMateria
-              key={String(item.id)}
-              title={item.title}
-              periodo={item.periodo}
-              description={item.description}
-            />
-        )}
-      />:
-        <View style={styles.boxText}>
-          <Text style={styles.textNoContent}>Não exite nenhuma matéria cadastrada!</Text>
+      {isLoading ? (
+        <View style={styles.container}>
+          <ActivityIndicator size={80} color={Colors.black} />
         </View>
-      }
+      ) : materias.length != 0 ? (
+        materias.map((element, index) => (
+          <DisplayMateria key={index} id={element.id} title={element.title} />
+        ))
+      ) : (
+        <View style={styles.boxText}>
+          <Text style={styles.textNoContent}>
+            Não exite nenhuma matéria cadastrada!
+          </Text>
+        </View>
+      )}
     </LinearGradientBox>
   );
 };
 
 const styles = StyleSheet.create({
-  boxText:{
-    flex:1,
-    justifyContent:'center',
-    alignItems:"center",
-    textAlign:"center"
+  container: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  boxText: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
   },
   textStyles: {
     fontSize: 30,
     fontFamily: "Ubuntu_400Regular",
   },
-  textNoContent:{
+  textNoContent: {
     fontFamily: "Ubuntu_400Regular",
-    color:Colors.black,
-    fontSize:18,
-    margin:10,
-    flexWrap:'wrap',
-  }
+    color: Colors.black,
+    fontSize: 18,
+    margin: 10,
+    flexWrap: "wrap",
+  },
 });
 
 export default MateriasLista;

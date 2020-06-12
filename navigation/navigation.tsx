@@ -11,6 +11,7 @@ import MateriasLista from '../pages/Materias/Index';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import CadastroMateria from '../pages/Materias/CadastroMateria';
 
+
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 

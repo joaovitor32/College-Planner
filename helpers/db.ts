@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabase('CPDatabase.db');
+const db = SQLite.openDatabase('CPlannerDatabase.db');
 
 export const initMaterias = () => {
     const promise = new Promise<any>((resolve, reject) => {
@@ -58,6 +58,26 @@ export const insertMateria = (title:string, periodo:string,description:string) =
     return promise;
 }
 
+export const materiaEdit = (id:number,title:string, periodo:string,description:string) => {
+    const promise = new Promise<any>((resolve, reject) => {
+        db.transaction((tx) => {
+            tx.executeSql(
+                `   
+                    UPDATE materia SET title=?,description=?,periodo=? WHERE idMateria=?
+                `,
+                [title,description,periodo,id],
+                (_,result) => {
+                    resolve(result)
+                },
+                (_, err):any => {
+                    reject(err)
+                },
+            )
+        })
+    })
+    return promise;
+}
+
 export const listMaterias=()=>{
     const promise=new Promise<any>((resolve,reject)=>{
         db.transaction(tx=>{
@@ -75,8 +95,6 @@ export const listMaterias=()=>{
     })
     return promise
 }
-
-
 
 
 
