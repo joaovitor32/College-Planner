@@ -11,6 +11,7 @@ This project was developed with the following technologies:
   - [redux](https://redux.js.org/)
   - [redux-thunk](https://github.com/reduxjs/redux-thunk)
   - [expo-file-system](https://docs.expo.io/versions/latest/sdk/filesystem/)
+  - [react-native-elements](https://react-native-elements.github.io/react-native-elements/docs/getting_started.html)
  
 <h3>How To Use</h3>
 
