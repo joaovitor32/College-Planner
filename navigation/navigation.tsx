@@ -10,6 +10,8 @@ import FotosLista from '../pages/Fotos/Index';
 import MateriasLista from '../pages/Materias/Index';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import CadastroMateria from '../pages/Materias/CadastroMateria';
+import ListaFotosSelecionadas from '../pages/Fotos/ListaFotosSelecionadas';
+import CadastrarFoto from '../pages/Fotos/CadastrarFoto';
 
 
 const Drawer = createDrawerNavigator();
@@ -62,6 +64,8 @@ const FotosStack=()=>{
     return (
         <Stack.Navigator screenOptions={stack}>
             <Stack.Screen name="FotosLista" component={FotosLista} />
+            <Stack.Screen name="ListaFotosSelecionadas" component={ListaFotosSelecionadas} />
+            <Stack.Screen name="CadastrarFoto" component={CadastrarFoto} />
         </Stack.Navigator>
     )
 }

@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabase('CPlannerDatabase.db');
+const db = SQLite.openDatabase('NewDb.db');
 
 export const initMaterias = () => {
     const promise = new Promise<any>((resolve, reject) => {
