@@ -71,7 +71,7 @@ const MateriasLista: React.FC = ({ navigation }: any) => {
         </View>
       ) : materias.length != 0 ? (
         materias.map((element, index) => (
-          <DisplayMateria key={element.id} id={element.id} title={element.title} />
+          <DisplayMateria key={index}  id={element.id} title={element.title} />
         ))
       ) : (
         <View style={styles.boxText}>

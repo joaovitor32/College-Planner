@@ -7,16 +7,15 @@ import LinearGradient from "react-native-linear-gradient";
 
 interface Props {
   title: string;
-  key: number;
   id:number,
 }
 
 const DisplayMateria: React.FC<Props> = (props) => {
+  
   const navigation = useNavigation();
 
   return (
     <ListItem
-      key={props.key}
       title={props.title}
       rightAvatar={
         <AntDesign

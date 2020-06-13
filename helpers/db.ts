@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabase('NewDb.db');
+const db = SQLite.openDatabase('helper.db');
 
 export const initMaterias = () => {
     const promise = new Promise<any>((resolve, reject) => {
@@ -23,7 +23,7 @@ export const initMaterias = () => {
 export const initFotos = () => {
     const promise = new Promise<any>((resolve, reject) => {
         db.transaction((tx) => {
-            tx.executeSql(`CREATE TABLE IF NOT EXISTS fotos (idFoto INTEGER PRIMARY KEY NOT NULL, imageUri TEXT NOT NULL, materiaReference INTEGER REFERENCES materia(idMateria))`,
+            tx.executeSql(`CREATE TABLE IF NOT EXISTS fotos (idFoto INTEGER PRIMARY KEY NOT NULL, imageUri TEXT NOT NULL, idMateria INTEGER NOT NULL, FOREIGN KEY(idMateria) materiaReference INTEGER REFERENCES materia(idMateria))`,
                 [],
                 ()=>{
                     resolve()
@@ -46,6 +46,26 @@ export const insertMateria = (title:string, periodo:string,description:string) =
                     INSERT INTO materia(title,periodo,description) VALUES (?,?,?)
                 `,
                 [title,periodo,description],
+                (_,result) => {
+                    resolve(result)
+                },
+                (_, err):any => {
+                    reject(err)
+                },
+            )
+        })
+    })
+    return promise;
+}
+
+export const insertFoto = (idMateria:number,imageUri:string) => {
+    const promise = new Promise<any>((resolve, reject) => {
+        db.transaction((tx) => {
+            tx.executeSql(
+                `   
+                    INSERT INTO fotos(imageUri,idMateria) VALUES (?,?)
+                `,
+                [imageUri,idMateria],
                 (_,result) => {
                     resolve(result)
                 },
@@ -95,6 +115,27 @@ export const listMaterias=()=>{
     })
     return promise
 }
+
+export const listFotos=(idMateria:number)=>{
+    const promise=new Promise<any>((resolve,reject)=>{
+        db.transaction(tx=>{
+            tx.executeSql(
+                `SELECT * FROM fotos WHERE idMateria=?`,
+                [idMateria],
+                (_:any,result:any)=>{
+
+                    resolve(result)
+                },
+                (_:any,err:any):any=>{
+                    reject(err)
+                }
+            )
+        })
+    })
+    return promise
+}
+
+
 
 
 

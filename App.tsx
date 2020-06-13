@@ -11,6 +11,7 @@ import { Provider } from "react-redux";
 import ReduxThunk from "redux-thunk";
 
 import MateriasReducer from "./store/reducers/Materia";
+import FotoReducer from './store/reducers/Fotos'
 
 initMaterias()
   .then(() => {
@@ -31,6 +32,7 @@ initFotos()
   });
 
 const rootReducer = combineReducers({
+  fotos:FotoReducer,
   materias: MateriasReducer,
 });
 
