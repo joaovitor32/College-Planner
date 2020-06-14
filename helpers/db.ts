@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabase('helper.db');
+const db = SQLite.openDatabase('newcpBD.db');
 
 export const initMaterias = () => {
     const promise = new Promise<any>((resolve, reject) => {
@@ -23,7 +23,7 @@ export const initMaterias = () => {
 export const initFotos = () => {
     const promise = new Promise<any>((resolve, reject) => {
         db.transaction((tx) => {
-            tx.executeSql(`CREATE TABLE IF NOT EXISTS fotos (idFoto INTEGER PRIMARY KEY NOT NULL, imageUri TEXT NOT NULL, idMateria INTEGER NOT NULL, FOREIGN KEY(idMateria) materiaReference INTEGER REFERENCES materia(idMateria))`,
+            tx.executeSql(`CREATE TABLE IF NOT EXISTS fotos (idFoto INTEGER PRIMARY KEY NOT NULL, imageUri TEXT NOT NULL, idMateria INTEGER, FOREIGN KEY(idMateria) REFERENCES materia(idMateria))`,
                 [],
                 ()=>{
                     resolve()

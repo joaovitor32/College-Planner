@@ -20,7 +20,7 @@ export const addFoto=(imageUri:string,idMateria:number)=>{
             })
 
             const dbResult=await insertFoto(idMateria,imageUri);
-            dispatch({type:ADD_FOTO,foto:{idFoto:dbResult.insertdId,imageUri:imageUri,idMateria:idMateria}});
+            dispatch({type:ADD_FOTO,foto:{idFoto:dbResult.insertId,imageUri:imageUri,idMateria:idMateria}});
         }catch(err){
             Alert.alert(err);
         }

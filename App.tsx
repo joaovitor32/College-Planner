@@ -11,7 +11,7 @@ import { Provider } from "react-redux";
 import ReduxThunk from "redux-thunk";
 
 import MateriasReducer from "./store/reducers/Materia";
-import FotoReducer from './store/reducers/Fotos'
+import FotoReducer from "./store/reducers/Fotos";
 
 initMaterias()
   .then(() => {
@@ -32,7 +32,7 @@ initFotos()
   });
 
 const rootReducer = combineReducers({
-  fotos:FotoReducer,
+  fotos: FotoReducer,
   materias: MateriasReducer,
 });
 
@@ -44,11 +44,10 @@ export default function App() {
   });
   if (!fontsLoaded) {
     return <AppLoading />;
-  } else {
-    return (
-      <Provider store={store}>
-        <DrawerNavigation />
-      </Provider>
-    );
   }
+  return (
+    <Provider store={store}>
+      <DrawerNavigation />
+    </Provider>
+  );
 }
