@@ -173,6 +173,7 @@ const CadastroMateria: React.FC = ({ navigation, route }: any) => {
             );
             break;
         }
+        navigation.goBack();
       } catch (err) {
         Alert.alert(err);
       }

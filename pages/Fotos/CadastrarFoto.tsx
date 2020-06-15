@@ -42,7 +42,7 @@ const CadastrarFoto: React.FC = ({ navigation,route }: any) => {
 
   return (
     <LinearGradientBox>
-      <ImgPicker cadastrarImagem={handleChosedImage} chosedImage={setChosedImage}/>
+      <ImgPicker cadastrarImagem={()=>{handleChosedImage()}} chosedImage={setChosedImage}/>
     </LinearGradientBox>
   );
 };
