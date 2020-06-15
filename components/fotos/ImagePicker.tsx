@@ -41,7 +41,6 @@ const ImgPicker: React.FC<Props> = (props) => {
     if (!permission) {
       return;
     }
-
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       quality: 1,

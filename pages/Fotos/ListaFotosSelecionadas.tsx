@@ -86,10 +86,10 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
         <View style={styles.boxFlatlist}>
           <FlatList
             data={fotos}
-            renderItem={({ item }) => (
-              console.log(item.created_at),
-              <FotoElement  key={String(item.idFoto)} created_at={item.created_at} imageUri={item.imageUri} id={item.idFoto} image={item.imageUri} />
+            renderItem={({ item,index }) => (
+              <FotoElement  created_at={item.created_at} imageUri={item.imageUri} id={item.idFoto}  />
             )}
+            keyExtractor={(item, index) => index.toString()}
           />
         </View>
       ) : (
