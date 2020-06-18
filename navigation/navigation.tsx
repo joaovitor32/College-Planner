@@ -6,11 +6,10 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import {Colors} from '../colors/colors'
 
-import FotosLista from '../pages/Fotos/Index';
-import MateriasLista from '../pages/Materias/Index';
-import { MaterialIcons } from '@expo/vector-icons'; 
-import CadastroMateria from '../pages/Materias/CadastroMateria';
-import ListaFotosSelecionadas from '../pages/Fotos/ListaFotosSelecionadas';
+import FotosLista,{HeaderFotosLista} from '../pages/Fotos/Index';
+import MateriasLista,{materiaIndexScreen } from '../pages/Materias/Index';
+import CadastroMateria,{materiaCadastroScreen} from '../pages/Materias/CadastroMateria';
+import ListaFotosSelecionadas,{HeaderFotosListaSelecionadas} from '../pages/Fotos/ListaFotosSelecionadas';
 import CadastrarFoto from '../pages/Fotos/CadastrarFoto';
 
 
@@ -29,33 +28,21 @@ const drawerOptions={
     }
 }
 
-const stack=()=>{
-    const navig:any=useNavigation();
-    return {headerStyle:{
+const stack={
+    headerStyle:{
         backgroundColor:Colors.black,
     },
     headerTitleStyle:{
         color:Colors.white,
         fontFamily:'Ubuntu_400Regular'
     },
-    headerLeft:()=>(
-        <MaterialIcons 
-            name="menu" 
-            size={28} 
-            color={Colors.white} 
-            style={styles.menu}
-            onPress={()=>{
-                navig.toggleDrawer()   
-            }}
-        />    
-    )}
 }
 
 const MateriasStack=()=>{
     return (
         <Stack.Navigator screenOptions={stack}>
-            <Stack.Screen name="MateriasLista" component={MateriasLista} />
-            <Stack.Screen name="MateriaNova" component={CadastroMateria} />
+            <Stack.Screen name="MateriasLista" options={materiaIndexScreen} component={MateriasLista} />
+            <Stack.Screen name="MateriaNova" options={materiaCadastroScreen} component={CadastroMateria} />
         </Stack.Navigator>
     )
 }
@@ -63,8 +50,8 @@ const MateriasStack=()=>{
 const FotosStack=()=>{
     return (
         <Stack.Navigator screenOptions={stack}>
-            <Stack.Screen name="FotosLista" component={FotosLista} />
-            <Stack.Screen name="ListaFotosSelecionadas" component={ListaFotosSelecionadas} />
+            <Stack.Screen name="FotosLista" options={HeaderFotosLista} component={FotosLista} />
+            <Stack.Screen name="ListaFotosSelecionadas" options={HeaderFotosListaSelecionadas} component={ListaFotosSelecionadas} />
             <Stack.Screen name="CadastrarFoto" component={CadastrarFoto} />
         </Stack.Navigator>
     )
@@ -84,9 +71,6 @@ const DrawerNavigation=()=> {
 const styles=StyleSheet.create({
     fontAwesome:{
         margin:Dimensions.get('window').height*0.04
-    },
-    menu:{
-        marginHorizontal:15,
     }
 })
   

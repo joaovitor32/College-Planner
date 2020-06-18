@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabase('reboot7.db');
+const db = SQLite.openDatabase('reboot8.db');
 
 export const initMaterias = () => {
     const promise = new Promise<any>((resolve, reject) => {

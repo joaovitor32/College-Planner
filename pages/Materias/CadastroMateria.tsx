@@ -18,9 +18,9 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../colors/colors";
 import LinearGradientBox from "../../components/LinearGradientBox";
-
 import { useDispatch, useSelector } from "react-redux";
 import * as MateriasAction from "../../store/actions/Materia";
+import HeaderLeft from '../../components/header/HeaderLeft'
 
 const CHECK_INPUTS = "CHECK_INPUTS";
 
@@ -77,25 +77,6 @@ const CadastroMateria: React.FC = ({ navigation, route }: any) => {
         return;
     }
   }, [type, materiaObject]);
-
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      title: "Cadastro de Matéria",
-      headerRight: () => {
-        return (
-          <Ionicons
-            name="ios-arrow-back"
-            size={28}
-            color={Colors.white}
-            style={{ marginHorizontal: 20 }}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
-        );
-      },
-    });
-  }, [navigation]);
 
   const inputHandlerTitle = (
     e: NativeSyntheticEvent<TextInputChangeEventData>
@@ -285,5 +266,27 @@ const styles = StyleSheet.create({
     fontFamily: "Ubuntu_400Regular",
   },
 });
+
+export const materiaCadastroScreen = (navData: any) => {
+  return {
+    title: "Cadastro de Matéria",
+    headerLeft:()=>(
+      <HeaderLeft navData={navData}/>
+    ),
+    headerRight: () => {
+      return (
+        <Ionicons
+          name="ios-arrow-back"
+          size={28}
+          color={Colors.white}
+          style={{ marginHorizontal: 20 }}
+          onPress={() => {
+            navData.navigation.goBack();
+          }}
+        />
+      );
+    },
+  };
+};
 
 export default CadastroMateria;

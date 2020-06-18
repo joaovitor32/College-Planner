@@ -8,6 +8,8 @@ import LinearGradientBox from "../../components/LinearGradientBox";
 import { useSelector, useDispatch } from "react-redux";
 import * as MateriasAction from "../../store/actions/Materia";
 import DisplayMateria from "../../components/materias/DisplayMateria";
+import HeaderLeft from '../../components/header/HeaderLeft'
+
 
 interface state {
   materias: {
@@ -41,27 +43,7 @@ const MateriasLista: React.FC = ({ navigation }: any) => {
     });
   }, [loadMaterias]);
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      title: "Matérias",
-      headerRight: () => {
-        return (
-          <AntDesign
-            style={{ marginHorizontal: 10 }}
-            name="plus"
-            size={28}
-            color={Colors.white}
-            onPress={() => {
-              navigation.navigate("MateriaNova", {
-                type: "CadastraMateria",
-                id: null,
-              });
-            }}
-          />
-        );
-      },
-    });
-  }, [navigation]);
+
 
   return (
     <LinearGradientBox>
@@ -107,5 +89,33 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
 });
+
+export const materiaIndexScreen = (navData:any) => {
+  return {
+    title: "Matérias",
+    headerLeft:()=>(
+      <HeaderLeft navData={navData}/>
+    ),
+    headerRight: () => {
+      return (
+        <AntDesign
+          style={{ marginHorizontal: 10 }}
+          name="plus"
+          size={28}
+          color={Colors.white}
+          onPress={() => {
+            navData.navigation.navigate("Materias", {
+              screen: "MateriaNova",
+              params: {
+                type: "CadastraMateria",
+                id: null,
+              },
+            });
+          }}
+        />
+      );
+    },
+  };
+};
 
 export default MateriasLista;

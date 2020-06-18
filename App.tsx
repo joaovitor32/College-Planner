@@ -13,6 +13,14 @@ import ReduxThunk from "redux-thunk";
 import MateriasReducer from "./store/reducers/Materia";
 import FotoReducer from "./store/reducers/Fotos";
 
+
+const rootReducer = combineReducers({
+  materias: MateriasReducer,
+  fotos: FotoReducer,
+});
+
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
+
 initMaterias()
   .then(() => {
     console.log("Initialized database");
@@ -31,12 +39,6 @@ initFotos()
     console.log(err);
   });
 
-const rootReducer = combineReducers({
-  fotos: FotoReducer,
-  materias: MateriasReducer,
-});
-
-const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -44,10 +46,11 @@ export default function App() {
   });
   if (!fontsLoaded) {
     return <AppLoading />;
+  } else {
+    return (
+      <Provider store={store}>
+        <DrawerNavigation />
+      </Provider>
+    );
   }
-  return (
-    <Provider store={store}>
-      <DrawerNavigation />
-    </Provider>
-  );
 }

@@ -10,6 +10,8 @@ import { useNavigation } from "@react-navigation/native";
 import * as FotoAction from "../../store/actions/Fotos";
 import FotoElement from "../../components/fotos/FotoElement";
 import { FlatList } from "react-native-gesture-handler";
+import HeaderLeft from '../../components/header/HeaderLeft'
+import { YellowBox } from 'react-native';
 
 interface state {
   fotos: {
@@ -23,7 +25,7 @@ interface state {
 }
 
 const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
-  const { id, title } = route.params;
+  const { id, title,loadMaterias } = route.params;
 
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -38,43 +40,16 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
   }, [dispatch]);
 
   useEffect(() => {
+    
     setIsLoading(true);
     loadFotosList().then(() => {
       setIsLoading(false);
     });
   }, [loadFotosList]);
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      title: `Fotos de ${title}`,
-      headerRight: () => {
-        return (
-          <View style={styles.containerHeaderRight}>
-            <Ionicons
-              name="ios-arrow-back"
-              size={28}
-              color={Colors.white}
-              style={{ marginHorizontal: 5 }}
-              onPress={() => {
-                navigation.navigate("FotosLista");
-              }}
-            />
-            <AntDesign
-              name="plus"
-              size={28}
-              color={Colors.white}
-              style={{ marginHorizontal: 10 }}
-              onPress={() => {
-                navigation.navigate("CadastrarFoto", {
-                  id: id,
-                });
-              }}
-            />
-          </View>
-        );
-      },
-    });
-  }, [navigation]);
+  YellowBox.ignoreWarnings([
+    'Non-serializable values were found in the navigation state',
+  ]);
 
   return (
     <LinearGradientBox>
@@ -131,5 +106,45 @@ const styles = StyleSheet.create({
     marginVertical:"4%"
   }
 });
+
+export const HeaderFotosListaSelecionadas = (navData: any) => {
+  const { title, id,loadMaterias} = navData.route.params;
+
+  return {
+    title: `Fotos de ${title}`,
+    headerLeft: () => (<HeaderLeft navData={navData} />),
+    headerRight: () => {
+      return (
+        <View style={styles.containerHeaderRight}>
+          <Ionicons
+            name="ios-arrow-back"
+            size={28}
+            color={Colors.white}
+            style={{ marginHorizontal: 5 }}
+            onPress={() => {
+              loadMaterias((state:boolean)=>!state);
+              navData.navigation.goBack()
+            }}
+          />
+          <AntDesign
+            name="plus"
+            size={28}
+            color={Colors.white}
+            style={{ marginHorizontal: 10 }}
+            onPress={() => {
+              navData.navigation.navigate("Fotos", {
+                screen: "CadastrarFoto",
+                params: {
+                  id: id,
+                },
+              });
+            }}
+          />
+        </View>
+      );
+    },
+  };
+};
+
 
 export default ListaFotosSelecionadas;

@@ -26,7 +26,7 @@ const FotoElement: React.FC<Props> = (props) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
-  const {id,imageUri,created_at}=props
+  const { id, imageUri, created_at } = props;
 
   const deleteFoto = (id: number, imageUri: string) => {
     dispatch(FotoAction.deletefoto(id, imageUri));
@@ -43,9 +43,13 @@ const FotoElement: React.FC<Props> = (props) => {
         toogle={toogleModal}
         imageUri={imageUri}
       />
-      <View  style={styles.box}>
-        <TouchableOpacity onPress={() =>{ toogleModal()}}>
-          <Image style={styles.imageStyle} source={{ uri:imageUri }} />
+      <View style={styles.box}>
+        <TouchableOpacity
+          onPress={() => {
+            toogleModal();
+          }}
+        >
+          <Image style={styles.imageStyle} source={{ uri: imageUri }} />
         </TouchableOpacity>
         <View style={styles.boxContent}>
           <Text style={styles.dateText}>{created_at}</Text>

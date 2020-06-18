@@ -6,6 +6,8 @@ import * as MateriasAction from "../../store/actions/Materia";
 import { Colors } from "../../colors/colors";
 import { FlatList } from "react-native-gesture-handler";
 import DisplayMateria from "../../components/fotos/DisplayMaterias";
+import HeaderLeft from '../../components/header/HeaderLeft'
+import { Ionicons } from '@expo/vector-icons'
 
 interface state {
   materias: {
@@ -20,6 +22,7 @@ const FotosLista: React.FC = ({ navigation }: any) => {
   const dispatch = useDispatch();
   const materias = useSelector((state: state) => state.materias.items);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadMat,setLoadMat]=useState(false)
 
   const loadMaterias = useCallback(async () => {
     try {
@@ -30,17 +33,21 @@ const FotosLista: React.FC = ({ navigation }: any) => {
   }, [dispatch]);
 
   useEffect(() => {
+    
     setIsLoading(true);
     loadMaterias().then(() => {
       setIsLoading(false);
     });
-  }, [loadMaterias]);
+    setLoadMat(false)
+
+  }, [loadMaterias,loadMat]);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
       title: "Fotos",
     });
   }, [navigation]);
+  
 
   return (
     <LinearGradientBox>
@@ -53,7 +60,7 @@ const FotosLista: React.FC = ({ navigation }: any) => {
           <FlatList
             data={materias}
             renderItem={({ item }) => (
-              <DisplayMateria key={item.id} title={item.title} id={item.id} />
+              <DisplayMateria loadMaterias={setLoadMat} key={item.id} title={item.title} id={item.id} />
             )}
             horizontal={false}
             numColumns={2}
@@ -90,5 +97,28 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
 });
+
+export const HeaderFotosLista = (navData: any) => {
+  return {
+    title: "Fotos",
+    headerRight: () => {
+      return (
+        <Ionicons
+          name="ios-arrow-back"
+          size={28}
+          color={Colors.white}
+          style={{ marginHorizontal: 20 }}
+          onPress={() => {
+            navData.navigation.goBack();
+          }}
+        />
+      );
+    },
+    headerLeft:()=>(
+      <HeaderLeft navData={navData}/>
+    ),
+  };
+};
+
 
 export default FotosLista;

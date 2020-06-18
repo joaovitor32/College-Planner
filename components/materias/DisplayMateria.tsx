@@ -21,7 +21,14 @@ const DisplayMateria: React.FC<Props> = (props) => {
         <AntDesign
           name="caretright"
           onPress={() => {
-            navigation.navigate("MateriaNova",{id:props.id,type:"EditarMateria"});
+            navigation.navigate(
+              "Materias", {
+                screen: "MateriaNova",
+                params: {
+                  type: "EditarMateria",
+                  id: props.id,
+                },
+              });
           }}
           size={20}
           color={Colors.whiteTransparent}
