@@ -48,13 +48,9 @@ const ImgPicker: React.FC<Props> = (props) => {
 
     if (!result.cancelled) {
       setPickedImage(result.uri);
+      props.chosedImage(result.uri);
     }
   };
-
-  const setImageData=()=>{
-    props.chosedImage(pickedImage);
-    props.cadastrarImagem();
-  }
 
   return (
     <LinearGradientBox>
@@ -73,7 +69,7 @@ const ImgPicker: React.FC<Props> = (props) => {
             <TouchableOpacity style={styles.button} onPress={takeImagehandler}>
               <Text style={styles.textButton}>Reset</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={setImageData}>
+            <TouchableOpacity style={styles.button} onPress={()=>{props.cadastrarImagem()}}>
               <Text style={styles.textButton}>Cadastrar</Text>
             </TouchableOpacity>
           </View>

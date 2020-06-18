@@ -25,7 +25,7 @@ interface state {
 }
 
 const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
-  const { id, title,loadMaterias } = route.params;
+  const { id} = route.params;
 
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
