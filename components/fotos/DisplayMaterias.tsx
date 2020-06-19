@@ -8,7 +8,7 @@ interface Props {
   title: string;
   key: number;
   id: number;
-  loadMaterias:any;
+  loadMaterias:(arg:boolean)=>void
 }
 
 const DisplayMateria: React.FC<Props> = (props) => {
@@ -19,11 +19,10 @@ const DisplayMateria: React.FC<Props> = (props) => {
       <Entypo
         onPress={() => {
           navigation.navigate("ListaFotosSelecionadas", {
-            
+          
               id: props.id,
               title: props.title,
               loadMaterias:props.loadMaterias
-            
           });
         }}
         name="folder"

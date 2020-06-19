@@ -10,21 +10,21 @@ import { useNavigation } from "@react-navigation/native";
 import * as FotoAction from "../../store/actions/Fotos";
 import FotoElement from "../../components/fotos/FotoElement";
 import { FlatList } from "react-native-gesture-handler";
+import { useFocusEffect } from "@react-navigation/native";
 import { YellowBox } from 'react-native';
-
 interface state {
   fotos: {
     items: {
       idFoto: number;
       idMateria: number;
       imageUri: string;
-      created_at:Date
+      created_at: Date;
     }[];
   };
 }
 
 const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
-  const { id} = route.params;
+  const { id } = route.params;
 
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -38,17 +38,19 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
     }
   }, [dispatch]);
 
-  useEffect(() => {
-    
-    setIsLoading(true);
-    loadFotosList().then(() => {
-      setIsLoading(false);
-    });
-  }, [loadFotosList]);
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      loadFotosList().then(() => {
+        setIsLoading(false);
+      });
+    }, [loadFotosList])
+  );
 
   YellowBox.ignoreWarnings([
     'Non-serializable values were found in the navigation state',
   ]);
+
 
   return (
     <LinearGradientBox>
@@ -60,8 +62,12 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
         <View style={styles.boxFlatlist}>
           <FlatList
             data={fotos}
-            renderItem={({ item,index }) => (
-              <FotoElement  created_at={item.created_at} imageUri={item.imageUri} id={item.idFoto}  />
+            renderItem={({ item, index }) => (
+              <FotoElement
+                created_at={item.created_at}
+                imageUri={item.imageUri}
+                id={item.idFoto}
+              />
             )}
             keyExtractor={(item, index) => index.toString()}
           />
@@ -98,16 +104,16 @@ const styles = StyleSheet.create({
     margin: 10,
     flexWrap: "wrap",
   },
-  boxFlatlist:{
-    height:"100%",
-    width:"100%",
-    marginHorizontal:"4%",
-    marginVertical:"4%"
-  }
+  boxFlatlist: {
+    height: "100%",
+    width: "100%",
+    marginHorizontal: "4%",
+    marginVertical: "4%",
+  },
 });
 
 export const HeaderFotosListaSelecionadas = (navData: any) => {
-  const { title, id,loadMaterias} = navData.route.params;
+  const { title, id,loadMaterias } = navData.route.params;
 
   return {
     title: `Fotos de ${title}`,
@@ -120,8 +126,9 @@ export const HeaderFotosListaSelecionadas = (navData: any) => {
             color={Colors.white}
             style={{ marginHorizontal: 5 }}
             onPress={() => {
+
               loadMaterias((state:boolean)=>!state);
-              navData.navigation.goBack()
+              navData.navigation.goBack();
             }}
           />
           <AntDesign
@@ -143,6 +150,5 @@ export const HeaderFotosListaSelecionadas = (navData: any) => {
     },
   };
 };
-
 
 export default ListaFotosSelecionadas;

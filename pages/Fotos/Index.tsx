@@ -7,6 +7,7 @@ import { Colors } from "../../colors/colors";
 import { FlatList } from "react-native-gesture-handler";
 import DisplayMateria from "../../components/fotos/DisplayMaterias";
 import { Ionicons } from '@expo/vector-icons'
+import { useFocusEffect } from '@react-navigation/native';
 
 interface state {
   materias: {
@@ -31,15 +32,18 @@ const FotosLista: React.FC = ({ navigation }: any) => {
     }
   }, [dispatch]);
 
-  useEffect(() => {
-    
+  useEffect(()=>{
     setIsLoading(true);
-    loadMaterias().then(() => {
-      setIsLoading(false);
-    });
-    setLoadMat(false)
+  },[loadMat])
 
-  }, [loadMaterias,loadMat]);
+  useFocusEffect(
+    useCallback(() => {
+      loadMaterias().then(() => {
+        setIsLoading(false);
+      });
+      setLoadMat(false)
+    }, [loadMaterias])
+  );
 
   React.useLayoutEffect(() => {
     navigation.setOptions({

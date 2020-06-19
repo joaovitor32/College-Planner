@@ -1,14 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { StyleSheet, Text, View, ActivityIndicator, Alert } from "react-native";
-
+import { StyleSheet, Text, View, ActivityIndicator, InteractionManager ,Alert } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import { AntDesign } from "@expo/vector-icons";
 import { Colors } from "../../colors/colors";
 import LinearGradientBox from "../../components/LinearGradientBox";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import * as MateriasAction from "../../store/actions/Materia";
 import DisplayMateria from "../../components/materias/DisplayMateria";
-
 
 interface state {
   materias: {
@@ -23,7 +22,7 @@ interface state {
 
 const MateriasLista: React.FC = ({ navigation }: any) => {
   const dispatch = useDispatch();
-  const materias = useSelector((state: state) => state.materias.items);
+  const materias = useSelector((state: state) => state.materias.items,shallowEqual);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -35,14 +34,17 @@ const MateriasLista: React.FC = ({ navigation }: any) => {
     }
   }, [dispatch]);
 
-  useEffect(() => {
+  useEffect(()=>{
     setIsLoading(true);
-    loadMaterias().then(() => {
-      setIsLoading(false);
-    });
-  }, [loadMaterias]);
+  },[])
 
-
+  useFocusEffect(
+    useCallback(() => {
+      loadMaterias().then(() => {
+        setIsLoading(false);
+      });
+    }, [loadMaterias])
+  );
 
   return (
     <LinearGradientBox>
