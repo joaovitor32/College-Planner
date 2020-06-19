@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
-    height: Dimensions.get("window").height * 0.18,
+    height: Dimensions.get("window").height * 0.1,
   },
   button: {
     backgroundColor: Colors.blackLinear,

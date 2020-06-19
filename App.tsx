@@ -1,5 +1,5 @@
 import React from "react";
-import DrawerNavigation from "./navigation/navigation";
+import TabNavigation from "./navigation/navigation";
 
 import { initFotos, initMaterias } from "./helpers/db";
 
@@ -49,7 +49,7 @@ export default function App() {
   } else {
     return (
       <Provider store={store}>
-        <DrawerNavigation />
+        <TabNavigation />
       </Provider>
     );
   }

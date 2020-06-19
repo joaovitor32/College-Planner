@@ -10,7 +10,6 @@ import { useNavigation } from "@react-navigation/native";
 import * as FotoAction from "../../store/actions/Fotos";
 import FotoElement from "../../components/fotos/FotoElement";
 import { FlatList } from "react-native-gesture-handler";
-import HeaderLeft from '../../components/header/HeaderLeft'
 import { YellowBox } from 'react-native';
 
 interface state {
@@ -112,7 +111,6 @@ export const HeaderFotosListaSelecionadas = (navData: any) => {
 
   return {
     title: `Fotos de ${title}`,
-    headerLeft: () => (<HeaderLeft navData={navData} />),
     headerRight: () => {
       return (
         <View style={styles.containerHeaderRight}>

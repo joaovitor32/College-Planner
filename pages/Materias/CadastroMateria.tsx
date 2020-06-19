@@ -20,7 +20,6 @@ import { Colors } from "../../colors/colors";
 import LinearGradientBox from "../../components/LinearGradientBox";
 import { useDispatch, useSelector } from "react-redux";
 import * as MateriasAction from "../../store/actions/Materia";
-import HeaderLeft from '../../components/header/HeaderLeft'
 
 const CHECK_INPUTS = "CHECK_INPUTS";
 
@@ -270,9 +269,6 @@ const styles = StyleSheet.create({
 export const materiaCadastroScreen = (navData: any) => {
   return {
     title: "Cadastro de Matéria",
-    headerLeft:()=>(
-      <HeaderLeft navData={navData}/>
-    ),
     headerRight: () => {
       return (
         <Ionicons

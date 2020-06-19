@@ -6,7 +6,6 @@ import * as MateriasAction from "../../store/actions/Materia";
 import { Colors } from "../../colors/colors";
 import { FlatList } from "react-native-gesture-handler";
 import DisplayMateria from "../../components/fotos/DisplayMaterias";
-import HeaderLeft from '../../components/header/HeaderLeft'
 import { Ionicons } from '@expo/vector-icons'
 
 interface state {
@@ -114,9 +113,6 @@ export const HeaderFotosLista = (navData: any) => {
         />
       );
     },
-    headerLeft:()=>(
-      <HeaderLeft navData={navData}/>
-    ),
   };
 };
 
