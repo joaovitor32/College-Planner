@@ -1,31 +1,101 @@
-import React, { useEffect, useCallback } from "react";
-import { Text, View, StyleSheet, Alert, Image, Modal } from "react-native";
+import React, { useEffect, useCallback, useState } from "react";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Alert,
+  Image,
+  Modal,
+  PanResponder,
+} from "react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
+import { useSelector } from "react-redux";
 
 interface Props {
   display: boolean;
-  imageUri: string;
   toogle: (state: boolean) => void;
+  id: number;
+}
+
+interface state {
+  fotos: {
+    items: {
+      idFoto: number;
+      idMateria: number;
+      imageUri: string;
+      created_at: Date;
+    }[];
+  };
 }
 
 const ModalGallery: React.FC<Props> = (props) => {
-  
-  const {display,imageUri,toogle} = props;
-  
+  const { display, toogle, id } = props;
+  const [passId, setPassId] = useState(id);
+
+  const fotoObject = useSelector((state: state) =>
+    state.fotos.items.find((foto) => foto.idFoto == passId)
+  );
+
   const orientation = useCallback(async () => {
     if (display) {
       await ScreenOrientation.unlockAsync();
-    }else{
-      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+    } else {
+      await ScreenOrientation.lockAsync(
+        ScreenOrientation.OrientationLock.PORTRAIT
+      );
     }
-  }, [display,ScreenOrientation]);
+  }, [display, ScreenOrientation]);
 
   useEffect(() => {
     orientation();
   }, [orientation]);
 
+  let panResponder = PanResponder.create({
+    // Ask to be the responder:
+    onStartShouldSetPanResponder: (evt, gestureState) => true,
+    onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+    onMoveShouldSetPanResponder: (evt, gestureState) => true,
+    onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+
+    onPanResponderGrant: (evt, gestureState) => {
+      // The gesture has started. Show visual feedback so the user knows
+      // what is happening!
+      // gestureState.d{x,y} will be set to zero now
+      //console.log("x:"+gestureState.x0,"y:"+gestureState.y0)
+    },
+    onPanResponderMove: (evt, gestureState) => {
+      // The most recent move distance is gestureState.move{X,Y}
+      // The accumulated gesture distance since becoming responder is
+      // gestureState.d{x,y}
+    },
+    onPanResponderTerminationRequest: (evt, gestureState) => false,
+    onPanResponderRelease: (evt, gestureState) => {
+      // The user has released all touches while this view is the
+      // responder. This typically means a gesture has succeeded
+      switch (Math.sign(gestureState.dx)) {
+        case -1:
+          setPassId((data: number) => data + 1);
+          break;
+        case +1:
+          setPassId((data: number) => data - 1);
+          break;
+        default:
+          break;
+      }
+    },
+    onPanResponderTerminate: (evt, gestureState) => {
+      // Another component has become the responder, so this gesture
+      // should be cancelled
+    },
+    onShouldBlockNativeResponder: (evt, gestureState) => {
+      // Returns whether this component should block native components from becoming the JS
+      // responder. Returns true by default. Is currently only supported on android.
+      return true;
+    },
+  });
+
   return (
-    <View style={styles.centeredView}>
+    <View {...panResponder.panHandlers} style={styles.centeredView}>
       <Modal
         animationType="slide"
         transparent={true}
@@ -36,7 +106,10 @@ const ModalGallery: React.FC<Props> = (props) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Image style={styles.image} source={{ uri:imageUri }} />
+            <Image
+              style={styles.image}
+              source={{ uri: fotoObject?.imageUri }}
+            />
           </View>
         </View>
       </Modal>

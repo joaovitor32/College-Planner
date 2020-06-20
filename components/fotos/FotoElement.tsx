@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -8,17 +8,28 @@ import {
   Modal,
   TouchableHighlight,
 } from "react-native";
+import { Foto } from "../../models/Fotos";
 import { useNavigation } from "@react-navigation/native";
 import { Colors } from "../../colors/colors";
 import { AntDesign } from "@expo/vector-icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as FotoAction from "../../store/actions/Fotos";
 import ModalGallery from "../../components/fotos/ModalGallery";
 import * as ScreenOrientation from "expo-screen-orientation";
 
+interface state {
+  fotos: {
+    items: {
+      idFoto: number;
+      idMateria: number;
+      imageUri: string;
+      created_at: Date;
+    }[];
+  };
+}
+
 interface Props {
   id: number;
-  imageUri: string;
   created_at: Date;
 }
 
@@ -26,11 +37,15 @@ const FotoElement: React.FC<Props> = (props) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
-  const { id, imageUri, created_at } = props;
+  const { id, created_at } = props;
 
   const deleteFoto = (id: number, imageUri: string) => {
     dispatch(FotoAction.deletefoto(id, imageUri));
   };
+
+  const fotoObject = useSelector((state: state) =>
+    state.fotos.items.find((foto) => foto.idFoto == id)
+  );
 
   const toogleModal = async () => {
     setModalVisible(!modalVisible);
@@ -38,25 +53,21 @@ const FotoElement: React.FC<Props> = (props) => {
 
   return (
     <>
-      <ModalGallery
-        display={modalVisible}
-        toogle={toogleModal}
-        imageUri={imageUri}
-      />
+      <ModalGallery display={modalVisible} toogle={toogleModal} id={id} />
       <View style={styles.box}>
         <TouchableOpacity
           onPress={() => {
             toogleModal();
           }}
         >
-          <Image style={styles.imageStyle} source={{ uri: imageUri }} />
+          <Image style={styles.imageStyle} source={{ uri: fotoObject?.imageUri }} />
         </TouchableOpacity>
         <View style={styles.boxContent}>
           <Text style={styles.dateText}>{created_at}</Text>
           <TouchableOpacity
             style={styles.tchDelete}
             onPress={() => {
-              deleteFoto(id, imageUri);
+              deleteFoto(id, fotoObject?fotoObject.imageUri:"");
             }}
           >
             <AntDesign name="close" size={30} color="white" />

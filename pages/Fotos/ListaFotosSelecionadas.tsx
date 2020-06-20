@@ -27,7 +27,7 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
   const { id } = route.params;
 
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const fotos = useSelector((state: state) => state.fotos.items)
 
   const loadFotosList = useCallback(async () => {
@@ -40,7 +40,6 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
 
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
       loadFotosList().then(() => {
         setIsLoading(false);
       });
@@ -65,7 +64,6 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
             renderItem={({ item, index }) => (
               <FotoElement
                 created_at={item.created_at}
-                imageUri={item.imageUri}
                 id={item.idFoto}
               />
             )}
