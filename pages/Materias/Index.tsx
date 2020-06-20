@@ -24,7 +24,7 @@ const MateriasLista: React.FC = ({ navigation }: any) => {
   const dispatch = useDispatch();
   const materias = useSelector((state: state) => state.materias.items,shallowEqual);
   const isFocused = useIsFocused();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const loadMaterias = useCallback(async () => {
     try {
@@ -37,7 +37,6 @@ const MateriasLista: React.FC = ({ navigation }: any) => {
 
   useEffect(() => {
     if (isFocused) {
-      setIsLoading(true);
       loadMaterias().then(() => {
         setIsLoading(false);
       });

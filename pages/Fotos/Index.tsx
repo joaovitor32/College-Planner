@@ -21,7 +21,7 @@ interface state {
 const FotosLista: React.FC = ({ navigation }: any) => {
   const dispatch = useDispatch();
   const materias = useSelector((state: state) => state.materias.items);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
 
   const loadMaterias = useCallback(async () => {
@@ -34,7 +34,6 @@ const FotosLista: React.FC = ({ navigation }: any) => {
 
   useEffect(() => {
     if (isFocused) {
-      setIsLoading(true);
       loadMaterias().then(() => {
         setIsLoading(false);
       });
