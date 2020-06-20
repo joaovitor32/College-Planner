@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { StyleSheet, Text, View, ActivityIndicator, InteractionManager ,Alert } from "react-native";
-import { useFocusEffect } from '@react-navigation/native';
+import { useIsFocused } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
 import { Colors } from "../../colors/colors";
 import LinearGradientBox from "../../components/LinearGradientBox";
@@ -23,7 +23,7 @@ interface state {
 const MateriasLista: React.FC = ({ navigation }: any) => {
   const dispatch = useDispatch();
   const materias = useSelector((state: state) => state.materias.items,shallowEqual);
-
+  const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(false);
 
   const loadMaterias = useCallback(async () => {
@@ -34,17 +34,17 @@ const MateriasLista: React.FC = ({ navigation }: any) => {
     }
   }, [dispatch]);
 
-  useEffect(()=>{
-    setIsLoading(true);
-  },[])
 
-  useFocusEffect(
-    useCallback(() => {
+  useEffect(() => {
+    if (isFocused) {
+      setIsLoading(true);
       loadMaterias().then(() => {
         setIsLoading(false);
       });
-    }, [loadMaterias])
-  );
+    }else{
+      setIsLoading(true);
+    }
+  }, [loadMaterias, isFocused]);
 
   return (
     <LinearGradientBox>

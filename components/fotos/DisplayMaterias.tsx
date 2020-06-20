@@ -4,11 +4,11 @@ import { useNavigation } from "@react-navigation/native";
 import { Colors } from "../../colors/colors";
 import { Entypo } from "@expo/vector-icons";
 
+
 interface Props {
   title: string;
   key: number;
   id: number;
-  loadMaterias:(arg:boolean)=>void
 }
 
 const DisplayMateria: React.FC<Props> = (props) => {
@@ -22,7 +22,7 @@ const DisplayMateria: React.FC<Props> = (props) => {
           
               id: props.id,
               title: props.title,
-              loadMaterias:props.loadMaterias
+      
           });
         }}
         name="folder"

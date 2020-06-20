@@ -6,8 +6,8 @@ import * as MateriasAction from "../../store/actions/Materia";
 import { Colors } from "../../colors/colors";
 import { FlatList } from "react-native-gesture-handler";
 import DisplayMateria from "../../components/fotos/DisplayMaterias";
-import { Ionicons } from '@expo/vector-icons'
-import { useFocusEffect } from '@react-navigation/native';
+import { Ionicons } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
 
 interface state {
   materias: {
@@ -22,7 +22,7 @@ const FotosLista: React.FC = ({ navigation }: any) => {
   const dispatch = useDispatch();
   const materias = useSelector((state: state) => state.materias.items);
   const [isLoading, setIsLoading] = useState(false);
-  const [loadMat,setLoadMat]=useState(false)
+  const isFocused = useIsFocused();
 
   const loadMaterias = useCallback(async () => {
     try {
@@ -32,25 +32,22 @@ const FotosLista: React.FC = ({ navigation }: any) => {
     }
   }, [dispatch]);
 
-  useEffect(()=>{
-    setIsLoading(true);
-  },[loadMat])
-
-  useFocusEffect(
-    useCallback(() => {
+  useEffect(() => {
+    if (isFocused) {
+      setIsLoading(true);
       loadMaterias().then(() => {
         setIsLoading(false);
       });
-      setLoadMat(false)
-    }, [loadMaterias])
-  );
+    }else{
+      setIsLoading(true);
+    }
+  }, [loadMaterias, isFocused]);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
       title: "Fotos",
     });
   }, [navigation]);
-  
 
   return (
     <LinearGradientBox>
@@ -63,7 +60,11 @@ const FotosLista: React.FC = ({ navigation }: any) => {
           <FlatList
             data={materias}
             renderItem={({ item }) => (
-              <DisplayMateria loadMaterias={setLoadMat} key={item.id} title={item.title} id={item.id} />
+              <DisplayMateria
+                key={item.id}
+                title={item.title}
+                id={item.id}
+              />
             )}
             horizontal={false}
             numColumns={2}
@@ -119,6 +120,5 @@ export const HeaderFotosLista = (navData: any) => {
     },
   };
 };
-
 
 export default FotosLista;

@@ -2,16 +2,16 @@ import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, View, Alert, ActivityIndicator } from "react-native";
 import LinearGradientBox from "../../components/LinearGradientBox";
 import { useDispatch, useSelector } from "react-redux";
-import * as MateriasAction from "../../store/actions/Materia";
 import { Colors } from "../../colors/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import * as FotoAction from "../../store/actions/Fotos";
 import FotoElement from "../../components/fotos/FotoElement";
 import { FlatList } from "react-native-gesture-handler";
 import { useFocusEffect } from "@react-navigation/native";
 import { YellowBox } from 'react-native';
+
+
 interface state {
   fotos: {
     items: {
@@ -28,7 +28,7 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
 
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const fotos = useSelector((state: state) => state.fotos.items);
+  const fotos = useSelector((state: state) => state.fotos.items)
 
   const loadFotosList = useCallback(async () => {
     try {
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
 });
 
 export const HeaderFotosListaSelecionadas = (navData: any) => {
-  const { title, id,loadMaterias } = navData.route.params;
+  const { title, id } = navData.route.params;
 
   return {
     title: `Fotos de ${title}`,
@@ -126,8 +126,6 @@ export const HeaderFotosListaSelecionadas = (navData: any) => {
             color={Colors.white}
             style={{ marginHorizontal: 5 }}
             onPress={() => {
-
-              loadMaterias((state:boolean)=>!state);
               navData.navigation.goBack();
             }}
           />
