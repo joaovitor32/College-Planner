@@ -1,16 +1,22 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { StyleSheet, Text, View, Alert, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  ActivityIndicator,
+  CheckBox,
+} from "react-native";
 import LinearGradientBox from "../../components/LinearGradientBox";
 import { useDispatch, useSelector } from "react-redux";
 import { Colors } from "../../colors/colors";
-import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import * as FotoAction from "../../store/actions/Fotos";
 import FotoElement from "../../components/fotos/FotoElement";
 import { FlatList } from "react-native-gesture-handler";
 import { useFocusEffect } from "@react-navigation/native";
-import { YellowBox } from 'react-native';
-
+import { YellowBox } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 interface state {
   fotos: {
@@ -28,7 +34,8 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
 
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
-  const fotos = useSelector((state: state) => state.fotos.items)
+  const fotos = useSelector((state: state) => state.fotos.items);
+  const [isSelected, setSelection] = useState(false);
 
   const loadFotosList = useCallback(async () => {
     try {
@@ -47,9 +54,8 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
   );
 
   YellowBox.ignoreWarnings([
-    'Non-serializable values were found in the navigation state',
+    "Non-serializable values were found in the navigation state",
   ]);
-
 
   return (
     <LinearGradientBox>
@@ -59,10 +65,25 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
         </View>
       ) : fotos.length != 0 ? (
         <View style={styles.boxFlatlist}>
+          <View style={styles.checkboxContainer}>
+            <View style={styles.checkboxContainerLeft}>
+              <CheckBox
+                value={isSelected}
+                onValueChange={() => {
+                  setSelection((state) => !state);
+                }}
+              />
+              <Text style={{ fontWeight: "bold" }}>Compartilhar fotos</Text>
+            </View>
+            <View style={styles.checkboxContainerRight}>
+              <Ionicons name="logo-whatsapp" size={24} color={"#4AC959"} />
+            </View>
+          </View>
           <FlatList
             data={fotos}
             renderItem={({ item, index }) => (
               <FotoElement
+                isSelected={isSelected}
                 created_at={item.created_at}
                 id={item.idFoto}
               />
@@ -108,6 +129,18 @@ const styles = StyleSheet.create({
     marginHorizontal: "4%",
     marginVertical: "4%",
   },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    textAlign:"center"
+  },
+  checkboxContainerLeft:{
+    flexDirection: "row",
+    alignItems:"center"
+  },
+  checkboxContainerRight:{
+
+  }
 });
 
 export const HeaderFotosListaSelecionadas = (navData: any) => {

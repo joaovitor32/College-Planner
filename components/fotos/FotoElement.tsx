@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
   Image,
   Modal,
-  TouchableHighlight,
-} from "react-native";
+  CheckBox,
+} from "react-native"; 
 import { Foto } from "../../models/Fotos";
 import { useNavigation } from "@react-navigation/native";
 import { Colors } from "../../colors/colors";
@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as FotoAction from "../../store/actions/Fotos";
 import ModalGallery from "../../components/fotos/ModalGallery";
 import * as ScreenOrientation from "expo-screen-orientation";
+import { FadeInView } from "../Animation/FadeInView";
 
 interface state {
   fotos: {
@@ -31,13 +32,15 @@ interface state {
 interface Props {
   id: number;
   created_at: Date;
+  isSelected: boolean;
 }
 
 const FotoElement: React.FC<Props> = (props) => {
+  
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
-  const { id, created_at } = props;
+  const { id, created_at, isSelected } = props;
 
   const deleteFoto = (id: number, imageUri: string) => {
     dispatch(FotoAction.deletefoto(id, imageUri));
@@ -55,19 +58,28 @@ const FotoElement: React.FC<Props> = (props) => {
     <>
       <ModalGallery display={modalVisible} toogle={toogleModal} id={id} />
       <View style={styles.box}>
+        {isSelected && (
+          <FadeInView  isSelected={isSelected}>
+            <CheckBox />
+          </FadeInView>
+        )}
         <TouchableOpacity
           onPress={() => {
             toogleModal();
           }}
         >
-          <Image style={styles.imageStyle} source={{ uri: fotoObject?.imageUri }} />
+          <Image
+            style={styles.imageStyle}
+            source={{ uri: fotoObject?.imageUri }}
+          />
         </TouchableOpacity>
+
         <View style={styles.boxContent}>
           <Text style={styles.dateText}>{created_at}</Text>
           <TouchableOpacity
             style={styles.tchDelete}
             onPress={() => {
-              deleteFoto(id, fotoObject?fotoObject.imageUri:"");
+              deleteFoto(id, fotoObject ? fotoObject.imageUri : "");
             }}
           >
             <AntDesign name="close" size={30} color="white" />
@@ -97,11 +109,11 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
     padding: 5,
     borderRadius: 20,
-    marginHorizontal: "2%",
+    marginHorizontal: "1%",
   },
   dateText: {
     color: Colors.white,
-    marginHorizontal: "5%",
+    marginHorizontal: "2.5%",
     fontSize: 18,
     fontFamily: "Ubuntu_400Regular",
   },

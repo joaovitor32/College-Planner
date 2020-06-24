@@ -37,7 +37,7 @@ const FotosLista: React.FC = ({ navigation }: any) => {
       loadMaterias().then(() => {
         setIsLoading(false);
       });
-    }else{
+    } else {
       setIsLoading(true);
     }
   }, [loadMaterias, isFocused]);
@@ -59,11 +59,7 @@ const FotosLista: React.FC = ({ navigation }: any) => {
           <FlatList
             data={materias}
             renderItem={({ item }) => (
-              <DisplayMateria
-                key={item.id}
-                title={item.title}
-                id={item.id}
-              />
+              <DisplayMateria key={item.id} title={item.title} id={item.id} />
             )}
             horizontal={false}
             numColumns={2}
