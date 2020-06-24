@@ -29,12 +29,14 @@ interface state {
 }
 
 const ModalGallery: React.FC<Props> = (props) => {
-  const { display, toogle, id } = props;
-  const [passId, setPassId] = useState(id);
 
-  const fotoObject = useSelector((state: state) =>
-    state.fotos.items.find((foto) => foto.idFoto == passId)
-  );
+  const fotos = useSelector((state: state) => state.fotos.items);
+  const { display, toogle, id } = props;
+
+  const mapIndex = fotos.map((item) => {return item.idFoto});
+  const [passId, setPassId] = useState(mapIndex.indexOf(id));
+
+  let fotoObject = fotos.find((foto) => foto.idFoto == mapIndex[passId]);
 
   const orientation = useCallback(async () => {
     if (display) {
@@ -49,6 +51,13 @@ const ModalGallery: React.FC<Props> = (props) => {
   useEffect(() => {
     orientation();
   }, [orientation]);
+
+
+  const newFotoObject=(index:number)=>{
+    if(mapIndex[index]){
+      setPassId(index);
+    }
+  }
 
   let panResponder = PanResponder.create({
     // Ask to be the responder:
@@ -72,12 +81,15 @@ const ModalGallery: React.FC<Props> = (props) => {
     onPanResponderRelease: (evt, gestureState) => {
       // The user has released all touches while this view is the
       // responder. This typically means a gesture has succeeded
+      let newIndex
       switch (Math.sign(gestureState.dx)) {
         case -1:
-          setPassId((data: number) => data + 1);
+          newIndex=passId+1
+          newFotoObject(newIndex)
           break;
         case +1:
-          setPassId((data: number) => data - 1);
+          newIndex=passId-1
+          newFotoObject(newIndex);
           break;
         default:
           break;
