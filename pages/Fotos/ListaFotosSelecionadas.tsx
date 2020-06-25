@@ -17,6 +17,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { useFocusEffect } from "@react-navigation/native";
 import { YellowBox } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
 interface state {
   fotos: {
@@ -36,6 +37,7 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
   const [isLoading, setIsLoading] = useState(true);
   const fotos = useSelector((state: state) => state.fotos.items);
   const [isSelected, setSelection] = useState(false);
+  const [selectedImages,setSelectedImages]=useState<Array<string>>([])
 
   const loadFotosList = useCallback(async () => {
     try {
@@ -75,9 +77,12 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
               />
               <Text style={{ fontWeight: "bold" }}>Compartilhar fotos</Text>
             </View>
-            <View style={styles.checkboxContainerRight}>
-              <Ionicons name="logo-whatsapp" size={24} color={"#4AC959"} />
-            </View>
+            {isSelected&&
+              <View style={styles.checkboxContainerRight}>
+                <Ionicons name="logo-whatsapp" size={30} color={"#4AC959"} />
+                <MaterialCommunityIcons name="email" size={30} color={'#c1392b'} />
+              </View>
+            }
           </View>
           <FlatList
             data={fotos}
@@ -86,6 +91,8 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
                 isSelected={isSelected}
                 created_at={item.created_at}
                 id={item.idFoto}
+                pickImage={setSelectedImages}
+                selectedImages={selectedImages}
               />
             )}
             keyExtractor={(item, index) => index.toString()}
@@ -132,15 +139,20 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: "row",
     alignItems: "center",
-    textAlign:"center"
+    textAlign: "center",
+    justifyContent:"space-between",
+    width:"90%",
+    marginVertical:5
   },
-  checkboxContainerLeft:{
+  checkboxContainerLeft: {
     flexDirection: "row",
-    alignItems:"center"
+    alignItems: "center",
   },
-  checkboxContainerRight:{
-
-  }
+  checkboxContainerRight: {
+    flexDirection:'row',
+    justifyContent:'space-around',
+    width:'25%'
+  },
 });
 
 export const HeaderFotosListaSelecionadas = (navData: any) => {

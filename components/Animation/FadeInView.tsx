@@ -6,14 +6,14 @@ export const FadeInView = (props: any) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const marginAnim = useRef(new Animated.Value(0)).current;
 
-  React.useEffect(() => {
-    let time=500;
+  useEffect(() => {
+    let time=300;
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: time,
     }).start();
     Animated.timing(marginAnim, {
-      toValue: 5,
+      toValue: 1,
       duration: time,
     }).start();
   }, [isSelected]);
@@ -23,7 +23,7 @@ export const FadeInView = (props: any) => {
       style={{
         ...props.style,
         opacity: fadeAnim,
-        marginLeft: marginAnim,
+        marginLeft: marginAnim
       }}
     >
       {props.children}

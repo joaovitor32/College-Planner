@@ -7,7 +7,7 @@ import {
   Image,
   Modal,
   CheckBox,
-} from "react-native"; 
+} from "react-native";
 import { Foto } from "../../models/Fotos";
 import { useNavigation } from "@react-navigation/native";
 import { Colors } from "../../colors/colors";
@@ -33,14 +33,16 @@ interface Props {
   id: number;
   created_at: Date;
   isSelected: boolean;
+  pickImage: (arg: any) => void;
+  selectedImages: Array<string>;
 }
 
 const FotoElement: React.FC<Props> = (props) => {
-  
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
-  const { id, created_at, isSelected } = props;
+  const { id, created_at, isSelected, pickImage, selectedImages } = props;
+  const [isMarked, setMarked] = useState(false);
 
   const deleteFoto = (id: number, imageUri: string) => {
     dispatch(FotoAction.deletefoto(id, imageUri));
@@ -54,13 +56,34 @@ const FotoElement: React.FC<Props> = (props) => {
     setModalVisible(!modalVisible);
   };
 
+  const handleMarker = () => {
+    setMarked((state: boolean) => !state);
+   
+    let choseUri=fotoObject?.imageUri;
+
+    const alreadySelected = selectedImages.includes(String(choseUri));
+ 
+    if(alreadySelected){
+      const filteredItems = selectedImages.filter(item => item != choseUri);
+      pickImage(filteredItems);  
+    }else{
+      pickImage((selectedImages:Array<string>)=>[...selectedImages, choseUri])
+    }
+
+  };
+
   return (
     <>
       <ModalGallery display={modalVisible} toogle={toogleModal} id={id} />
       <View style={styles.box}>
         {isSelected && (
-          <FadeInView  isSelected={isSelected}>
-            <CheckBox />
+          <FadeInView isSelected={isSelected}>
+            <CheckBox
+              value={isMarked}
+              onValueChange={() => {
+                handleMarker();
+              }}
+            />
           </FadeInView>
         )}
         <TouchableOpacity
