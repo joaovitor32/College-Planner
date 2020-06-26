@@ -13,7 +13,7 @@ import { Colors } from "../../colors/colors";
 import { AntDesign } from "@expo/vector-icons";
 import * as FotoAction from "../../store/actions/Fotos";
 import FotoElement from "../../components/fotos/FotoElement";
-import ModalEmail from '../../components/fotos/ModalEmail';
+import ModalShare from '../../components/fotos/ModalShare';
 import { FlatList } from "react-native-gesture-handler";
 import { useFocusEffect } from "@react-navigation/native";
 import { YellowBox } from "react-native";
@@ -84,7 +84,7 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
               />
               <Text style={{ fontWeight: "bold" }}>Compartilhar fotos</Text>
             </View>
-            <ModalEmail display={modalVisible} toogle={toogleModal}  />
+            <ModalShare fotos={selectedImages} display={modalVisible} toogle={toogleModal}  />
             {isSelected&&
               <View style={styles.checkboxContainerRight}>
                 <Ionicons  name="logo-whatsapp" size={30} color={"#4AC959"} />
