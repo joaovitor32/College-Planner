@@ -30,6 +30,7 @@ interface state {
 
 const ModalGallery: React.FC<Props> = (props) => {
 
+
   const fotos = useSelector((state: state) => state.fotos.items);
   const { display, toogle, id } = props;
 
