@@ -4,20 +4,22 @@ import {
   View,
   StyleSheet,
   Alert,
-  Image,
   Modal,
-  PanResponder,
   TextInput,
   Dimensions,
   KeyboardAvoidingView,
   Platform,
+  FlatList,
   NativeSyntheticEvent,
   TextInputChangeEventData,
+  ActivityIndicator,
+  Linking,
 } from "react-native";
 import { Colors } from "../../colors/colors";
 import { AntDesign } from "@expo/vector-icons";
 import * as MailComposer from "expo-mail-composer";
-import * as Contacts from 'expo-contacts';
+import * as Contacts from "expo-contacts";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 interface Props {
   display: boolean;
@@ -26,22 +28,60 @@ interface Props {
   type: string;
 }
 
+interface Contact {
+  id: string;
+  name: string;
+  phoneNumber?: [];
+}
+
+const Item = (props: any) => {
+  const { item, sendPhone } = props;
+
+  let numberPhone = item.phoneNumbers?item.phoneNumbers[0].number:null;
+
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        sendPhone(numberPhone);
+      }}
+    >
+      <Text style={styles.textContact}>{item.name}</Text>
+    </TouchableOpacity>
+  )
+};
+
 const ModalShare: React.FC<Props> = (props) => {
   const { display, toogle, fotos, type } = props;
   const [email, setEmail] = useState("");
-  const [contacts,setContacts]=useState({})
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const requestContacts=async() => {
-        const { status } = await Contacts.requestPermissionsAsync();
-      if (status === 'granted') {
+  const requestContacts = useCallback(async () => {
+    try {
+      const { status } = await Contacts.requestPermissionsAsync();
+      if (status === "granted") {
         const { data } = await Contacts.getContactsAsync({
-          fields: [Contacts.Fields.RawImage,Contacts.Fields.Image,Contacts.Fields.PhoneNumbers,Contacts.Fields.ImageAvailable],
+          fields: [
+            Contacts.Fields.RawImage,
+            Contacts.Fields.Image,
+            Contacts.Fields.PhoneNumbers,
+            Contacts.Fields.ImageAvailable,
+            Contacts.PHONE_NUMBERS,
+            Contacts.IMAGE,
+            Contacts.RAW_IMAGE,
+          ],
         });
-
         setContacts(data);
       }
-    }
+    } catch (err) {}
+  }, []);
 
+  useEffect(() => {
+    setIsLoading(true);
+    requestContacts().then(() => {
+      setIsLoading(false);
+    });
+  }, [requestContacts, display]);
 
   const inputHandlerEmail = (
     e: NativeSyntheticEvent<TextInputChangeEventData>
@@ -75,6 +115,13 @@ const ModalShare: React.FC<Props> = (props) => {
     });
   };
 
+  const handlePhone = (number: string) => {
+    console.log(number)
+    Linking.openURL(
+      `whatsapp://send?phone=${number}&text=Mandando fotos das matérias`
+    );
+  };
+
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -86,7 +133,7 @@ const ModalShare: React.FC<Props> = (props) => {
         }}
       >
         {type == "email" && (
-          <View style={[styles.modalViewEmail,styles.modalView]}>
+          <View style={[styles.modalViewEmail, styles.modalView]}>
             <KeyboardAvoidingView
               behavior={Platform.OS == "ios" ? "padding" : "height"}
               style={{ flex: 1 }}
@@ -115,22 +162,41 @@ const ModalShare: React.FC<Props> = (props) => {
             </KeyboardAvoidingView>
           </View>
         )}
-        {type == "phone" && (
-          <View style={[styles.modalView,styles.modalViewPhone]}>
-            <Text>Zap</Text>
-          </View>
-        )}
+        {type == "phone" &&
+          (!isLoading ? (
+            <View style={[styles.modalView, styles.modalViewPhone]}>
+              <FlatList
+                data={contacts}
+                renderItem={({ item }) => (
+                  <Item sendPhone={handlePhone} item={item} />
+                )}
+                keyExtractor={(item) => String(item.id)}
+                initialNumToRender={10}
+              />
+            </View>
+          ) : (
+            <View style={[styles.modalView, styles.modalViewPhone]}>
+              <View style={styles.container}>
+                <ActivityIndicator size={80} color={Colors.white} />
+              </View>
+            </View>
+          ))}
       </Modal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+  },
   centeredView: {
     flex: 1,
     width: "100%",
     height: "100%",
-
     alignItems: "center",
     textAlign: "center",
   },
@@ -171,6 +237,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     height: 40,
     width: "80%",
+  },
+  textContact: {
+    color: Colors.white,
+    marginVertical: Dimensions.get("screen").height * 0.01,
+    fontSize: Dimensions.get("screen").height * 0.03,
   },
 });
 export default ModalShare;

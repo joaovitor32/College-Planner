@@ -51,13 +51,13 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
     setModalVisible(!modalVisible);
   }
 
-  const loadFotosList = useCallback(async () => {
+  const loadFotosList = async () => {
     try {
       await dispatch(FotoAction.loadFotos(id));
     } catch (err) {
       Alert.alert(err);
     }
-  }, [dispatch]);
+  };
 
   useFocusEffect(
     useCallback(() => {
