@@ -40,11 +40,16 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
   const fotos = useSelector((state: state) => state.fotos.items);
   const [isSelected, setSelection] = useState(false);
   const [selectedImages,setSelectedImages]=useState<Array<string>>([])
-  
+  const [type,setType]=useState('');
 
-  const toogleModal = async () => {
-    setModalVisible(!modalVisible);
+  const toogleModal = async (type:string) => {
+    setType(type);
+    handleModal();
   };
+
+  const handleModal=()=>{
+    setModalVisible(!modalVisible);
+  }
 
   const loadFotosList = useCallback(async () => {
     try {
@@ -84,11 +89,11 @@ const ListaFotosSelecionadas: React.FC = ({ navigation, route }: any) => {
               />
               <Text style={{ fontWeight: "bold" }}>Compartilhar fotos</Text>
             </View>
-            <ModalShare fotos={selectedImages} display={modalVisible} toogle={toogleModal}  />
+            <ModalShare type={type} fotos={selectedImages} display={modalVisible} toogle={handleModal}  />
             {isSelected&&
               <View style={styles.checkboxContainerRight}>
-                <Ionicons  name="logo-whatsapp" size={30} color={"#4AC959"} />
-                <MaterialCommunityIcons onPress={toogleModal} name="email" size={30} color={'#c1392b'} />
+                <Ionicons  name="logo-whatsapp" onPress={()=>{toogleModal('phone')}} size={30} color={"#4AC959"} />
+                <MaterialCommunityIcons onPress={()=>{toogleModal('email')}} name="email" size={30} color={'#c1392b'} />
               </View>
             }
           </View>

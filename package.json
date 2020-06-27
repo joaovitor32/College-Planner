@@ -17,6 +17,7 @@
     "@types/react-redux": "^7.1.9",
     "expo": "~37.0.3",
     "expo-camera": "~8.2.0",
+    "expo-contacts": "~8.1.0",
     "expo-file-system": "~8.1.0",
     "expo-font": "~8.1.0",
     "expo-image-picker": "~8.1.0",
