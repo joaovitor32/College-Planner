@@ -18,45 +18,48 @@ import {
 import { Colors } from "../../colors/colors";
 import { AntDesign } from "@expo/vector-icons";
 import * as MailComposer from "expo-mail-composer";
-import * as Contacts from "expo-contacts";
+//import * as Contacts from "expo-contacts"
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 interface Props {
   display: boolean;
   toogle: (state: boolean) => void;
   fotos: Array<string>;
-  type: string;
+  //type: string;
 }
 
-interface Contact {
+/*interface Contact {
   id: string;
   name: string;
   phoneNumber?: [];
-}
+}*/
 
-const Item = (props: any) => {
+/*const Item = (props: any) => {
   const { item, sendPhone } = props;
 
-  let numberPhone = item.phoneNumbers?item.phoneNumbers[0].number:null;
+  let numberPhone = item.phoneNumbers ? item.phoneNumbers[0].number : null;
 
   return (
-    <TouchableOpacity
-      onPress={() => {
-        sendPhone(numberPhone);
-      }}
-    >
-      <Text style={styles.textContact}>{item.name}</Text>
+    <TouchableOpacity>
+      <Text
+        onPress={() => {
+          sendPhone(numberPhone);
+        }}
+        style={styles.textContact}
+      >
+        {item.name}
+      </Text>
     </TouchableOpacity>
-  )
-};
+  );
+};*/
 
 const ModalShare: React.FC<Props> = (props) => {
-  const { display, toogle, fotos, type } = props;
+  const { display, toogle, fotos} = props;
   const [email, setEmail] = useState("");
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  //const [contacts, setContacts] = useState<Contact[]>([]);
+  //const [isLoading, setIsLoading] = useState(false);
 
-  const requestContacts = useCallback(async () => {
+  /*const requestContacts = useCallback(async () => {
     try {
       const { status } = await Contacts.requestPermissionsAsync();
       if (status === "granted") {
@@ -74,20 +77,27 @@ const ModalShare: React.FC<Props> = (props) => {
         setContacts(data);
       }
     } catch (err) {}
-  }, []);
+  }, []);*/
 
-  useEffect(() => {
+  /*useEffect(() => {
     setIsLoading(true);
     requestContacts().then(() => {
       setIsLoading(false);
     });
-  }, [requestContacts, display]);
+  }, [requestContacts, display]);*/
 
   const inputHandlerEmail = (
     e: NativeSyntheticEvent<TextInputChangeEventData>
   ): void => {
     const element = e.nativeEvent.text;
     setEmail(element);
+  };
+
+  const checkArrayFotos = (fotos: Array<string>) => {
+    if (!fotos) {
+      Alert.alert("Nenhuma foto foi selecionada!");
+      return;
+    }
   };
 
   const sendMail = () => {
@@ -101,10 +111,8 @@ const ModalShare: React.FC<Props> = (props) => {
       );
       return;
     }
-    if (!fotos) {
-      Alert.alert("Nenhuma foto foi selecionada!");
-      return;
-    }
+
+    checkArrayFotos(fotos);
 
     MailComposer.composeAsync({
       subject: "Mandando fotos de matéria",
@@ -116,7 +124,7 @@ const ModalShare: React.FC<Props> = (props) => {
   };
 
   const handlePhone = (number: string) => {
-    console.log(number)
+    checkArrayFotos(fotos);
     Linking.openURL(
       `whatsapp://send?phone=${number}&text=Mandando fotos das matérias`
     );
@@ -132,37 +140,35 @@ const ModalShare: React.FC<Props> = (props) => {
           toogle(!display);
         }}
       >
-        {type == "email" && (
-          <View style={[styles.modalViewEmail, styles.modalView]}>
-            <KeyboardAvoidingView
-              behavior={Platform.OS == "ios" ? "padding" : "height"}
-              style={{ flex: 1 }}
-            >
-              <View style={styles.boxInputs}>
-                <Text style={styles.textInput}>Email:</Text>
-                <TextInput
-                  style={styles.input}
-                  onChange={inputHandlerEmail}
-                  placeholderTextColor={Colors.white}
-                  multiline={true}
-                  numberOfLines={4}
-                  returnKeyType="done"
-                />
-              </View>
-              <View style={styles.boxButton}>
-                <AntDesign
-                  onPress={() => {
-                    sendMail();
-                  }}
-                  name="check"
-                  size={30}
-                  color={Colors.white}
-                />
-              </View>
-            </KeyboardAvoidingView>
-          </View>
-        )}
-        {type == "phone" &&
+        <View style={[styles.modalViewEmail, styles.modalView]}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+            style={{ flex: 1 }}
+          >
+            <View style={styles.boxInputs}>
+              <Text style={styles.textInput}>Email:</Text>
+              <TextInput
+                style={styles.input}
+                onChange={inputHandlerEmail}
+                placeholderTextColor={Colors.white}
+                multiline={true}
+                numberOfLines={4}
+                returnKeyType="done"
+              />
+            </View>
+            <View style={styles.boxButton}>
+              <AntDesign
+                onPress={() => {
+                  sendMail();
+                }}
+                name="check"
+                size={30}
+                color={Colors.white}
+              />
+            </View>
+          </KeyboardAvoidingView>
+        </View>
+        {/*type == "phone" &&
           (!isLoading ? (
             <View style={[styles.modalView, styles.modalViewPhone]}>
               <FlatList
@@ -180,7 +186,7 @@ const ModalShare: React.FC<Props> = (props) => {
                 <ActivityIndicator size={80} color={Colors.white} />
               </View>
             </View>
-          ))}
+          ))*/}
       </Modal>
     </View>
   );
