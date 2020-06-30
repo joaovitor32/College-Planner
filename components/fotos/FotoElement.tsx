@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
     padding: 5,
     borderRadius: 20,
-    marginHorizontal: "1%",
+    marginHorizontal: "2%",
   },
   dateText: {
     color: Colors.white,
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   box: {
     flexDirection: "row",
     backgroundColor: Colors.blackLinear,
-    width: "90%",
+    width: "92%",
     height: 160,
     justifyContent: "center",
     alignItems: "center",

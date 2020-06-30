@@ -7,17 +7,15 @@ import { Colors } from "../colors/colors";
 
 import FotosLista, { HeaderFotosLista } from "../pages/Fotos/Index";
 import MateriasLista, { materiaIndexScreen } from "../pages/Materias/Index";
-import CadastroMateria, {
-  materiaCadastroScreen,
-} from "../pages/Materias/CadastroMateria";
-import ListaFotosSelecionadas, {
-  HeaderFotosListaSelecionadas,
-} from "../pages/Fotos/ListaFotosSelecionadas";
+import CadastroMateria, {materiaCadastroScreen,} from "../pages/Materias/CadastroMateria";
+import ListaFotosSelecionadas, {HeaderFotosListaSelecionadas,} from "../pages/Fotos/ListaFotosSelecionadas";
+import  CalendarioLista,{calendarioIndexScreen} from '../pages/Calendario/Index'
+
 import CadastrarFoto from "../pages/Fotos/CadastrarFoto";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { MaterialIcons } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons,Ionicons,Entypo } from "@expo/vector-icons";
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -47,6 +45,20 @@ const stack = {
   },
   headerLeft:()=>{return null}
 };
+
+const CalendarioStack = () => {
+  return (
+    <Stack.Navigator  screenOptions={stack}>
+      <Stack.Screen
+        name="CalendarioLista"
+        options={calendarioIndexScreen}
+        component={CalendarioLista}
+      />
+    </Stack.Navigator>
+  );
+};
+
+
 
 const MateriasStack = () => {
   return (
@@ -106,6 +118,16 @@ const TabNavigation = () => {
             ),
           }}
           component={FotosStack}
+        />
+         <Tab.Screen
+          name="Calendário"
+          options={{
+            tabBarLabel: "Calendário",
+            tabBarIcon: ({ color, size }) => (
+              <Entypo name="calendar" size={size} color={color} />
+            ),
+          }}
+          component={CalendarioStack}
         />
       </Tab.Navigator>
     </NavigationContainer>
