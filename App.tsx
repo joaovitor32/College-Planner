@@ -1,7 +1,7 @@
 import React from "react";
 import TabNavigation from "./navigation/navigation";
 
-import { initFotos, initMaterias } from "./helpers/db";
+import { initFotos, initMaterias, initEventos } from "./helpers/db";
 
 import { AppLoading } from "expo";
 import { Ubuntu_400Regular, useFonts } from "@expo-google-fonts/ubuntu";
@@ -12,7 +12,6 @@ import ReduxThunk from "redux-thunk";
 
 import MateriasReducer from "./store/reducers/Materia";
 import FotoReducer from "./store/reducers/Fotos";
-
 
 const rootReducer = combineReducers({
   materias: MateriasReducer,
@@ -39,6 +38,14 @@ initFotos()
     console.log(err);
   });
 
+initEventos()
+  .then(() => {
+    console.log("Initialized database");
+  })
+  .catch((err) => {
+    console.log("Initializing db failed.");
+    console.log(err);
+  });
 
 export default function App() {
   let [fontsLoaded] = useFonts({

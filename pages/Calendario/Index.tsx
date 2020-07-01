@@ -1,22 +1,29 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Text, Button, Platform } from "react-native";
 import { AntDesign, Ionicons, Entypo } from "@expo/vector-icons";
 import { Colors } from "../../colors/colors";
 import LinearGradientBox from "../../components/LinearGradientBox";
 import { Calendar } from "react-native-calendars";
+import ModalEvento from "../../components/calendario/ModalEvento";
 
 const CalendarioLista: React.FC = ({ navigation }: any) => {
-  const vacation = { key: "evento", color: "red", selectedDotColor: "blue" };
+  const [modalVisible, setModalVisible] = useState(false);
+  const [date, setDate] = useState<Date>(new Date());
+
+  const toogleModal = (date:Date) => {
+    setDate(date)
+    setModalVisible(!modalVisible);
+  };
 
   return (
     <LinearGradientBox>
+      <ModalEvento display={modalVisible} toogle={setModalVisible} date={date}/>
       <Calendar
-        style={{ height: "100%", width: "100%" }}
+        style={{ height: "100%", width: "100%"}}
         /*markedDates={{
           '2020-10-25': {dots: [vacation], selected: true},
           '2020-10-26': {dots: [vacation], selected: true}
         }}*/
-        markingType={'multi-dot'}
         dayComponent={({ date, state, marking }) => {
           return (
             <View>
@@ -25,9 +32,7 @@ const CalendarioLista: React.FC = ({ navigation }: any) => {
                   textAlign: "center",
                   color: state === "disabled" ? "gray" : "black",
                 }}
-                onPress={() => {
-                  console.log(marking);
-                }}
+                onPress={()=>{toogleModal(new Date(date.dateString))}}
               >
                 {date.day}
               </Text>

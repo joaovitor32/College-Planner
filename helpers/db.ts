@@ -36,6 +36,22 @@ export const initFotos = () => {
     return promise;
 }
 
+export const initEventos=()=>{
+    const promise = new Promise<any>((resolve, reject) => {
+        db.transaction((tx) => {
+            tx.executeSql(`CREATE TABLE IF NOT EXISTS eventos (idEvento INTEGER PRIMARY KEY NOT NULL, evento TEXT NOT NULL, created_at DATE)`,
+                [],
+                () => {
+                    resolve()
+                },
+                (_: any, err: any): any => {
+                    reject(err);
+                }
+            )
+        })
+    })
+    return promise;
+}
 
 export const insertMateria = (title: string, periodo: string, description: string) => {
     const promise = new Promise<any>((resolve, reject) => {
@@ -45,6 +61,26 @@ export const insertMateria = (title: string, periodo: string, description: strin
                     INSERT INTO materia(title,periodo,description) VALUES (?,?,?)
                 `,
                 [title, periodo, description],
+                (_, result) => {
+                    resolve(result)
+                },
+                (_, err): any => {
+                    reject(err)
+                },
+            )
+        })
+    })
+    return promise;
+}
+
+export const insertEvento = (evento: string, date: Date) => {
+    const promise = new Promise<any>((resolve, reject) => {
+        db.transaction((tx) => {
+            tx.executeSql(
+                `   
+                    INSERT INTO eventos(evento,created_at) VALUES (?,?)
+                `,
+                [evento,date],
                 (_, result) => {
                     resolve(result)
                 },
@@ -137,6 +173,26 @@ export const listFotos = (idMateria: number) => {
             tx.executeSql(
                 `SELECT * FROM fotos WHERE idMateria=?`,
                 [idMateria],
+                (_: any, result: any) => {
+
+                    resolve(result)
+                },
+                (_: any, err: any): any => {
+                    reject(err)
+                }
+            )
+        })
+    })
+    return promise
+}
+
+
+export const listEventos = (date: Date) => {
+    const promise = new Promise<any>((resolve, reject) => {
+        db.transaction(tx => {
+            tx.executeSql(
+                `SELECT * FROM eventos WHERE created_at=?`,
+                [date],
                 (_: any, result: any) => {
 
                     resolve(result)
