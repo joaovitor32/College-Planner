@@ -1,17 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Text,
   View,
   Modal,
   StyleSheet,
-  Button,
+  FlatList,
   TextInput,
   NativeSyntheticEvent,
   TextInputChangeEventData,
+  Alert,
 } from "react-native";
 import { Colors } from "../../colors/colors";
 import { List } from "react-native-paper";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useDispatch, useSelector } from "react-redux";
+import * as CalendarioAction from "../../store/actions/Eventos";
 
 interface Props {
   display: boolean;
@@ -24,8 +27,31 @@ interface evento {
   validyEvento: boolean;
 }
 
+interface state {
+  eventos: {
+    items: {
+      idEvento: number;
+      evento: string;
+      created_at: string;
+    }[];
+  };
+}
+
+interface PropsEvento{
+  evento:string,
+}
+
+const DisplayEvent:React.FC<PropsEvento> = (props) => {
+  return (
+    <View style={styles.boxEventText}>
+      <Text style={styles.eventText}>{props.evento}</Text>
+    </View>
+  );
+};
+
 const ModalEvento: React.FC<Props> = (props) => {
   const { display, toogle, date } = props;
+  const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(false);
   const [dados, setDados] = useState<evento>({
     evento: "",
@@ -39,18 +65,49 @@ const ModalEvento: React.FC<Props> = (props) => {
     date.getFullYear(),
   ].join("/");
 
+  const eventos = useSelector((state: state) =>
+    state.eventos.items.filter((el) => el.created_at == dateFormatted)
+  );
+
+  const loadEventos = useCallback(async () => {
+    try {
+      await dispatch(CalendarioAction.loadEventos());
+    } catch (err) {
+      Alert.alert(JSON.stringify(err));
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    loadEventos();
+  }, [loadEventos]);
+
   const inputHandlerEvento = (
     e: NativeSyntheticEvent<TextInputChangeEventData>
   ): void => {
-      const element=e.nativeEvent.text;
-      let  validyEvento=true;
+    const element = e.nativeEvent.text;
+    let validyEvento = true;
 
-      if(element.length==0){
-        validyEvento=false;
-      }
+    if (element.length == 0) {
+      validyEvento = false;
+    }
 
-      setDados({evento:element,validyEvento:validyEvento})
+    setDados({ evento: element, validyEvento: validyEvento });
   };
+
+  const submitHandler = () => {
+    if (dados.validyEvento) {
+      dispatch(CalendarioAction.addEvento(dados.evento, date));
+      setDados({ evento: "", validyEvento: false });
+    } else {
+      Alert.alert(
+        "Algum dado inserido está incorreto!",
+        "Por favor, reveja os campos!"
+      );
+      return;
+    }
+  };
+
+  //console.log(eventos);
 
   return (
     <View style={styles.centeredView}>
@@ -78,13 +135,21 @@ const ModalEvento: React.FC<Props> = (props) => {
                 <View style={styles.boxCadastroEvento}>
                   <Text style={styles.textEvento}>Evento: </Text>
                   <TextInput
+                    value={dados.evento}
                     style={styles.input}
                     placeholder="Evento do dia..."
                     onChange={inputHandlerEvento}
                   />
                 </View>
                 <TouchableOpacity style={styles.btnCadEvento}>
-                    <Text style={styles.textEvento}>Cadastrar</Text>
+                  <Text
+                    onPress={() => {
+                      submitHandler();
+                    }}
+                    style={styles.textEvento}
+                  >
+                    Cadastrar
+                  </Text>
                 </TouchableOpacity>
               </List.Accordion>
 
@@ -97,7 +162,19 @@ const ModalEvento: React.FC<Props> = (props) => {
                 expanded={expanded}
                 onPress={handlePress}
               >
-                <Text>Accordion</Text>
+                {eventos.length == 0 ? (
+                  <View style={styles.boxNocontent}>
+                    <Text style={styles.TextNocontent}>
+                      Este dia não tem eventos!
+                    </Text>
+                  </View>
+                ) : (
+                  <FlatList
+                    data={eventos}
+                    renderItem={({ item }) => <DisplayEvent evento={item.evento} />}
+                    keyExtractor={(item) => String(item.idEvento)}
+                  />
+                )}
               </List.Accordion>
             </List.Section>
           </View>
@@ -133,17 +210,32 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textEvento: {
-      color:Colors.white,
+    color: Colors.white,
   },
   input: {
-    color:Colors.white,
+    color: Colors.white,
     marginHorizontal: 10,
   },
-  btnCadEvento:{
-    width:'60%',
-    padding:'2%',
-    marginHorizontal:'20%',
-    backgroundColor:Colors.darkGray
+  btnCadEvento: {
+    width: "60%",
+    padding: "2%",
+    marginHorizontal: "20%",
+    backgroundColor: Colors.darkGray,
+  },
+  boxNocontent: {
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+  },
+  TextNocontent: {
+    color: Colors.white,
+  },
+  boxEventText:{
+    paddingVertical:15,
+  },
+  eventText:{
+    color:'white',
+    fontWeight:'bold',
+    fontSize:15,
   }
 });
 

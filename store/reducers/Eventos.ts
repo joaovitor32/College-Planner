@@ -5,7 +5,7 @@ import { INSERT_EVENTO, LOAD_EVENTOS } from '../actions/Eventos'
 interface evento {
     idEvento: number,
     evento: string,
-    created_at: Date,
+    created_at: string,
 }
 
 interface action {
@@ -21,17 +21,14 @@ const eventos = {
 export default (state = eventos, action: action) => {
     switch (action.type) {
         case INSERT_EVENTO:
-        
             const newEvento=new Evento(action.evento.idEvento,action.evento.evento,action.evento.created_at);
-
             return {
                 items:state.items.concat(newEvento)
             }
     
         case LOAD_EVENTOS:
-
             return {
-                items:action.eventos.map((evento:evento)=>{new Evento(action.evento.idEvento,action.evento.evento,action.evento.created_at)})
+                items:action.eventos.map((evento:evento)=>new Evento(evento.idEvento,evento.evento,evento.created_at))
             }
 
         default:

@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabase('reboot8.db');
+const db = SQLite.openDatabase('reboot11.db');
 
 export const initMaterias = () => {
     const promise = new Promise<any>((resolve, reject) => {
@@ -73,7 +73,7 @@ export const insertMateria = (title: string, periodo: string, description: strin
     return promise;
 }
 
-export const insertEvento = (evento: string, date: Date) => {
+export const insertEvento = (evento: string, date: string) => {
     const promise = new Promise<any>((resolve, reject) => {
         db.transaction((tx) => {
             tx.executeSql(
@@ -187,14 +187,13 @@ export const listFotos = (idMateria: number) => {
 }
 
 
-export const listEventos = (date: Date) => {
+export const listEventos = () => {
     const promise = new Promise<any>((resolve, reject) => {
         db.transaction(tx => {
             tx.executeSql(
-                `SELECT * FROM eventos WHERE created_at=?`,
-                [date],
+                `SELECT * FROM  eventos`,
+                [],
                 (_: any, result: any) => {
-
                     resolve(result)
                 },
                 (_: any, err: any): any => {

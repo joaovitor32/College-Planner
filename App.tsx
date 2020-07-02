@@ -12,10 +12,12 @@ import ReduxThunk from "redux-thunk";
 
 import MateriasReducer from "./store/reducers/Materia";
 import FotoReducer from "./store/reducers/Fotos";
+import EventoReducer from './store/reducers/Eventos'
 
 const rootReducer = combineReducers({
   materias: MateriasReducer,
   fotos: FotoReducer,
+  eventos:EventoReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
