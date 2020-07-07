@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { StyleSheet, View, Text, Alert } from "react-native";
+import { StyleSheet, View, Text, Alert, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../colors/colors";
 import LinearGradientBox from "../../components/LinearGradientBox";
@@ -19,13 +19,7 @@ interface state {
   };
 }
 
-interface event{
-  date:string,
-  selected:boolean
-}
-
 const CalendarioLista: React.FC = ({ navigation }: any) => {
-
   LocaleConfig.locales["pt"] = {
     monthNames: [
       "Janeiro",
@@ -70,7 +64,8 @@ const CalendarioLista: React.FC = ({ navigation }: any) => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [date, setDate] = useState<Date>(new Date());
-  const [markedEvents,setMarkedEvents]=useState<event[]>([])
+  const [markedEvents, setMarkedEvents] = useState<{}>({});
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   const toogleModal = (date: Date) => {
@@ -78,69 +73,94 @@ const CalendarioLista: React.FC = ({ navigation }: any) => {
     setModalVisible(!modalVisible);
   };
 
+  const eventos = useSelector((state: state) => state.eventos.items);
+
+  const getSelectedEvents = () => {
+    let selectedEvents: any = {};
+    if (eventos.length != 0) {
+      eventos.forEach((elem) => {
+        let tranformDate = elem.created_at.split("/");
+        let date = [tranformDate[2], tranformDate[1], tranformDate[0]].join(
+          "-"
+        );
+        selectedEvents[date] = {
+          selected: true,
+          marked: true,
+          selectedColor: Colors.blackLinear,
+          color: '#00B0BF', textColor: '#FFFFFF'
+        };
+      });
+    }
+    setMarkedEvents({ markedDates: selectedEvents });
+  };
+
   const loadEventos = useCallback(async () => {
     try {
-      dispatch(CalendarioAction.loadEventos())
+      await dispatch(CalendarioAction.loadEventos());
     } catch (err) {
       Alert.alert(JSON.stringify(err));
     }
   }, [dispatch]);
 
-  const eventos = useSelector((state: state) =>state.eventos.items);
-
-  const getSelectedEvents=()=>{
-    let selectedEvents:event[]=[];
-    if(eventos.length!=0){
-      eventos.forEach(elem=>{
-        let tranformDate=elem.created_at.split('/');
-        let date=[ tranformDate[2], tranformDate[1],tranformDate[0]].join('-');
-        selectedEvents.push({date,selected:true})
-      })
-    }
-    setMarkedEvents(selectedEvents);
-  }
-  
   useEffect(() => {
-    loadEventos();
+    setIsLoading(true);
+    loadEventos().then(() => {
+      setIsLoading(false)
+    });
   }, [loadEventos]);
 
+  useEffect(()=>{
+    getSelectedEvents();
+  },[isLoading])
 
   return (
     <LinearGradientBox>
-      <ModalEvento
-        display={modalVisible}
-        toogle={setModalVisible}
-        date={date}
-      />
-      <Calendar
-        style={{ height: "100%", width: "100%" }}
-        /*markedDates={{
-          '2020-10-25': {dots: [vacation], selected: true},
-          '2020-10-26': {dots: [vacation], selected: true}
-        }}*/
-        dayComponent={({ date, state, marking }) => {
-          return (
-            <View>
-              <Text
-                style={{
-                  color: state === "disabled" ? "gray" : "black",
-                  padding: 15,
-                }}
-                onPress={() => {
-                  toogleModal(new Date(date.dateString));
-                }}
-              >
-                {date.day}
-              </Text>
-            </View>
-          );
-        }}
-      />
+      {isLoading ? (
+        <View style={styles.container}>
+          <ActivityIndicator size={80} color={Colors.black} />
+        </View>
+      ) : (
+        <>
+          <ModalEvento
+            display={modalVisible}
+            toogle={setModalVisible}
+            date={date}
+          />
+          <Calendar
+            style={{ height: "100%", width: "100%" }}
+            markedDates={markedEvents}
+            dayComponent={({ date, state, marking }) => {
+              return (
+                <View>
+                  <Text
+                    style={{
+                      color: state === "disabled" ? "gray" : "black",
+                      padding: 15,
+                    }}
+                    onPress={() => {
+                      toogleModal(new Date(date.dateString));
+                    }}
+                  >
+                    {date.day}
+                  </Text>
+                </View>
+              );
+            }}
+          />
+        </>
+      )}
     </LinearGradientBox>
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+  },
+});
 
 export const calendarioIndexScreen = (navData: any) => {
   return {
