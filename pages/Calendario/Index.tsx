@@ -1,21 +1,30 @@
-import React, { useState } from "react";
-import { StyleSheet, View, Text, Button, Platform } from "react-native";
-import { AntDesign, Ionicons, Entypo } from "@expo/vector-icons";
+import React, { useState, useEffect, useCallback } from "react";
+import { StyleSheet, View, Text, Alert } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../colors/colors";
 import LinearGradientBox from "../../components/LinearGradientBox";
 import { Calendar } from "react-native-calendars";
 import ModalEvento from "../../components/calendario/ModalEvento";
-import { colors } from "react-native-elements";
+import { useSelector, useDispatch } from "react-redux";
 import { LocaleConfig } from "react-native-calendars";
+import * as CalendarioAction from "../../store/actions/Eventos";
+
+interface state {
+  eventos: {
+    items: {
+      idEvento: number;
+      evento: string;
+      created_at: string;
+    }[];
+  };
+}
+
+interface event{
+  date:string,
+  selected:boolean
+}
 
 const CalendarioLista: React.FC = ({ navigation }: any) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [date, setDate] = useState<Date>(new Date());
-
-  const toogleModal = (date: Date) => {
-    setDate(date);
-    setModalVisible(!modalVisible);
-  };
 
   LocaleConfig.locales["pt"] = {
     monthNames: [
@@ -56,9 +65,45 @@ const CalendarioLista: React.FC = ({ navigation }: any) => {
       "Sábado",
     ],
     dayNamesShort: ["Dom.", "Seg.", "Mar.", "Qua.", "Qui.", "Sex.", "Sab."],
-    
   };
   LocaleConfig.defaultLocale = "pt";
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [date, setDate] = useState<Date>(new Date());
+  const [markedEvents,setMarkedEvents]=useState<event[]>([])
+  const dispatch = useDispatch();
+
+  const toogleModal = (date: Date) => {
+    setDate(date);
+    setModalVisible(!modalVisible);
+  };
+
+  const loadEventos = useCallback(async () => {
+    try {
+      dispatch(CalendarioAction.loadEventos())
+    } catch (err) {
+      Alert.alert(JSON.stringify(err));
+    }
+  }, [dispatch]);
+
+  const eventos = useSelector((state: state) =>state.eventos.items);
+
+  const getSelectedEvents=()=>{
+    let selectedEvents:event[]=[];
+    if(eventos.length!=0){
+      eventos.forEach(elem=>{
+        let tranformDate=elem.created_at.split('/');
+        let date=[ tranformDate[2], tranformDate[1],tranformDate[0]].join('-');
+        selectedEvents.push({date,selected:true})
+      })
+    }
+    setMarkedEvents(selectedEvents);
+  }
+  
+  useEffect(() => {
+    loadEventos();
+  }, [loadEventos]);
+
 
   return (
     <LinearGradientBox>

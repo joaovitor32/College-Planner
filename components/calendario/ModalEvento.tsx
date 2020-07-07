@@ -69,18 +69,6 @@ const ModalEvento: React.FC<Props> = (props) => {
     state.eventos.items.filter((el) => el.created_at == dateFormatted)
   );
 
-  const loadEventos = useCallback(async () => {
-    try {
-      await dispatch(CalendarioAction.loadEventos());
-    } catch (err) {
-      Alert.alert(JSON.stringify(err));
-    }
-  }, [dispatch]);
-
-  useEffect(() => {
-    loadEventos();
-  }, [loadEventos]);
-
   const inputHandlerEvento = (
     e: NativeSyntheticEvent<TextInputChangeEventData>
   ): void => {
@@ -106,8 +94,6 @@ const ModalEvento: React.FC<Props> = (props) => {
       return;
     }
   };
-
-  //console.log(eventos);
 
   return (
     <View style={styles.centeredView}>
@@ -196,8 +182,9 @@ const styles = StyleSheet.create({
   modalView: {
     backgroundColor: Colors.blackLinearDarker,
     width: "90%",
-    height: "90%",
-    margin: "5%",
+    height: "75%",
+    marginVertical: "12.5%",
+    marginHorizontal:'5%'
   },
   image: {
     width: "100%",

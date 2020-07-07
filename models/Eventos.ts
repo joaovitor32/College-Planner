@@ -2,7 +2,7 @@ export class Evento{
 
     idEvento:number;
     evento:string;
-    created_at:string
+    created_at:string;
 
     constructor(idEvento:number,evento:string,created_at:string){
         this.idEvento=idEvento,
