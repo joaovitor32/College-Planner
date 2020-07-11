@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { LocaleConfig } from "react-native-calendars";
 import * as CalendarioAction from "../../store/actions/Eventos";
 import { colors } from "react-native-elements";
-
+import { useIsFocused } from "@react-navigation/native";
 interface state {
   eventos: {
     items: {
@@ -65,6 +65,7 @@ const CalendarioLista: React.FC = ({ navigation }: any) => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [date, setDate] = useState<Date>(new Date());
+  const isFocused = useIsFocused();
   const [markedEvents, setMarkedEvents] = useState<{}>({});
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -112,6 +113,16 @@ const CalendarioLista: React.FC = ({ navigation }: any) => {
       setIsLoading(false);
     });
   }, [loadEventos]);
+
+  useEffect(() => {
+    if (isFocused) {
+      loadEventos().then(() => {
+        setIsLoading(false);
+      });
+    }else{
+      setIsLoading(true);
+    }
+  }, [loadEventos, isFocused]);
 
   /*useEffect(() => {
       getSelectedEvents();
