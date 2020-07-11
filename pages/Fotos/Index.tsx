@@ -37,7 +37,7 @@ const FotosLista: React.FC = ({ navigation }: any) => {
       loadMaterias().then(() => {
         setIsLoading(false);
       });
-    } else {
+    }else{
       setIsLoading(true);
     }
   }, [loadMaterias, isFocused]);

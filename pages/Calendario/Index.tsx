@@ -8,6 +8,7 @@ import ModalEvento from "../../components/calendario/ModalEvento";
 import { useSelector, useDispatch } from "react-redux";
 import { LocaleConfig } from "react-native-calendars";
 import * as CalendarioAction from "../../store/actions/Eventos";
+import { colors } from "react-native-elements";
 
 interface state {
   eventos: {
@@ -86,8 +87,11 @@ const CalendarioLista: React.FC = ({ navigation }: any) => {
         selectedEvents[date] = {
           selected: true,
           marked: true,
+          marking: true,
           selectedColor: Colors.blackLinear,
-          color: '#00B0BF', textColor: '#FFFFFF'
+          color: "#00B0BF",
+          textColor: "#FFFFFF",
+          startDate: date,
         };
       });
     }
@@ -105,13 +109,13 @@ const CalendarioLista: React.FC = ({ navigation }: any) => {
   useEffect(() => {
     setIsLoading(true);
     loadEventos().then(() => {
-      setIsLoading(false)
+      setIsLoading(false);
     });
   }, [loadEventos]);
 
-  useEffect(()=>{
-    getSelectedEvents();
-  },[isLoading])
+  /*useEffect(() => {
+      getSelectedEvents();
+  }, [isLoading]);*/
 
   return (
     <LinearGradientBox>
@@ -127,18 +131,42 @@ const CalendarioLista: React.FC = ({ navigation }: any) => {
             date={date}
           />
           <Calendar
-            style={{ height: "100%", width: "100%" }}
-            markedDates={markedEvents}
-            dayComponent={({ date, state, marking }) => {
+            style={{
+              height: "100%",
+              width: "100%",
+              backgroundColor: Colors.blackLinear,
+            }}
+            theme={{
+              arrowColor: Colors.white,
+              "stylesheet.calendar.header": {
+                week: {
+                  marginTop: 5,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                },
+              },
+              monthTextColor: Colors.white,
+              calendarBackground: "transparent",
+            }}
+            dayComponent={({ date, state }) => {
               return (
                 <View>
                   <Text
                     style={{
-                      color: state === "disabled" ? "gray" : "black",
+                      color:
+                        state === "disabled"
+                          ? Colors.blackLinear
+                          : state == "today"
+                          ? "white"
+                          : Colors.spanishGray,
                       padding: 15,
+                      backgroundColor: state == "today" ? "black" : undefined,
+                      borderRadius: state == "today" ? 30 : undefined,
                     }}
                     onPress={() => {
-                      toogleModal(new Date(date.dateString));
+                      if (state != "disabled") {
+                        toogleModal(new Date(date.dateString));
+                      }
                     }}
                   >
                     {date.day}
@@ -165,19 +193,6 @@ const styles = StyleSheet.create({
 export const calendarioIndexScreen = (navData: any) => {
   return {
     title: "Eventos",
-    headerRight: () => {
-      return (
-        <Ionicons
-          name="ios-arrow-back"
-          size={28}
-          color={Colors.white}
-          style={{ marginHorizontal: 20 }}
-          onPress={() => {
-            navData.navigation.goBack();
-          }}
-        />
-      );
-    },
   };
 };
 

@@ -21,7 +21,8 @@ export const addFoto = (imageUri: string, idMateria: number) => {
             })
 
             let d = new Date();
-            let date=[d.getDate()+1, d.getMonth()+1, d.getFullYear()].join('/')
+           
+            let date=[d.getDate(), d.getMonth()+1, d.getFullYear()].join('/')
             const dbResult = await insertFoto(idMateria, newPath, date);
             dispatch({ type: ADD_FOTO, foto: { idFoto: dbResult.insertId, imageUri: newPath, idMateria: idMateria,created_at:date } });
         } catch (err) {
