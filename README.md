@@ -31,3 +31,18 @@ $ npm install
 $ expo start
 
 ```
+<p align="center">
+
+  <img width='30%'   src="./screens/Screenshot_20200712-103506_Expo.jpg" />
+  <img width='30%'  src="./screens/Screenshot_20200712-103513_Expo.jpg" />
+   <img width='30%'  src="./screens/Screenshot_20200712-103520_Expo.jpg" />
+</p>
+<p align="center">
+
+  <img width='30%'   src="./screens/Screenshot_20200712-103523_Expo.jpg" />
+  <img width='30%'  src="./screens/Screenshot_20200712-103527_Expo.jpg" />
+   <img width='30%'  src="./screens/Screenshot_20200712-103540_Expo.jpg" />
+</p>
+<p align="center">
+  <img width='30%'   src="./screens/Screenshot_20200712-103542_Expo.jpg" />
+</p>
