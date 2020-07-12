@@ -8,6 +8,7 @@ import { insertFoto, listFotos, deleteFotos } from '../../helpers/db'
 
 import { Dispatch } from 'redux';
 import { Alert } from 'react-native';
+import { dateFormattedFunction } from '../../utils/util';
 
 export const addFoto = (imageUri: string, idMateria: number) => {
     return async (dispatch: Dispatch) => {
@@ -22,7 +23,7 @@ export const addFoto = (imageUri: string, idMateria: number) => {
 
             let d = new Date();
            
-            let date=[d.getDate(), d.getMonth()+1, d.getFullYear()].join('/')
+            let date=dateFormattedFunction(d);
             const dbResult = await insertFoto(idMateria, newPath, date);
             dispatch({ type: ADD_FOTO, foto: { idFoto: dbResult.insertId, imageUri: newPath, idMateria: idMateria,created_at:date } });
         } catch (err) {

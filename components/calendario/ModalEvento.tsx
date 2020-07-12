@@ -15,6 +15,7 @@ import { List } from "react-native-paper";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from "react-redux";
 import * as CalendarioAction from "../../store/actions/Eventos";
+import { dateFormattedFunction } from "../../utils/util";
 
 interface Props {
   display: boolean;
@@ -59,12 +60,7 @@ const ModalEvento: React.FC<Props> = (props) => {
   } as evento);
 
   const handlePress = () => setExpanded(!expanded);
-  const dateFormatted = [
-    date.getDate() + 1,
-    date.getMonth() + 1,
-    date.getFullYear(),
-  ].join("/");
-
+  const dateFormatted=dateFormattedFunction(date);
   const eventos = useSelector((state: state) =>
     state.eventos.items.filter((el) => el.created_at == dateFormatted)
   );
